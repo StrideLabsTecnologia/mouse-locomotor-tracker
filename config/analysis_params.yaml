@@ -1,0 +1,143 @@
+# Mouse Locomotor Tracker - Analysis Parameters
+# TOP 0.1% Configuration
+# Optimized for high-quality locomotor analysis
+
+# ============================================================================
+# VIDEO PARAMETERS
+# ============================================================================
+video:
+  fps: 30                    # Frames per second (auto-detected if null)
+  pixel_to_mm: 0.5           # Conversion factor (auto-calculated if null)
+  image_width_mm: 200        # Physical width of field of view in mm
+
+# ============================================================================
+# TRACKING PARAMETERS
+# ============================================================================
+tracking:
+  confidence_threshold: 0.6  # Minimum confidence for valid detection
+  interpolation_max_gap: 5   # Max frames to interpolate
+  smoothing:
+    enabled: true
+    method: "savgol"         # Options: "moving_average", "savgol", "gaussian"
+    window_size: 5           # Window size for smoothing
+    polyorder: 2             # For Savitzky-Golay filter
+
+# ============================================================================
+# VELOCITY ANALYSIS
+# ============================================================================
+velocity:
+  smoothing_factor: 1        # For position smoothing
+  speed_smoothing_factor: 10 # For velocity smoothing
+  outlier_threshold: 3       # Remove speeds > 3x belt speed
+  unit: "cm/s"               # Output unit
+
+# ============================================================================
+# ACCELERATION ANALYSIS
+# ============================================================================
+acceleration:
+  smoothing_factor: 12       # Smoothing window
+  drag_recovery:
+    enabled: true
+    time_threshold: 0.25     # Min duration (seconds) for drag/recovery event
+
+# ============================================================================
+# GAIT CYCLE DETECTION
+# ============================================================================
+gait_cycle:
+  interpolation_factor: 4    # Upsampling for better peak detection
+  speed_threshold: 5         # Min speed (cm/s) to count as moving
+  peak_detection:
+    min_distance_factor: 0.5 # Min distance between peaks as fraction of mean
+
+# ============================================================================
+# COORDINATION ANALYSIS (Circular Statistics)
+# ============================================================================
+coordination:
+  # Pairs to analyze
+  pairs:
+    - "LHRH"   # Hindlimb left-right
+    - "LHLF"   # Homolateral left
+    - "RHRF"   # Homolateral right
+    - "LFRH"   # Diagonal 1
+    - "RFLH"   # Diagonal 2
+    - "LFRF"   # Forelimb left-right
+
+  # Rayleigh test parameters
+  rayleigh:
+    significance_level: 0.05
+    min_steps: 5             # Minimum steps for valid analysis
+
+# ============================================================================
+# KINEMATICS (Joint Angles)
+# ============================================================================
+kinematics:
+  joints:
+    - "hip"
+    - "knee"
+    - "ankle"
+    - "foot"
+
+  smoothing_window: 10       # For position smoothing before angle calculation
+  cycle_samples: 51          # Number of samples per normalized cycle
+
+# ============================================================================
+# VISUALIZATION
+# ============================================================================
+visualization:
+  # Trajectory overlay
+  trajectory:
+    trail_length: 30         # Number of frames in trail
+    color_gradient: true     # Blue -> Green -> Yellow
+    glow_effect: true
+    marker_size: 8
+
+  # Stick figures
+  stick_figures:
+    swing_color: [255, 0, 0]    # Red (BGR)
+    stance_color: [128, 128, 128]  # Gray
+    line_width: 2
+    time_synchronized: true
+
+  # Circular plots
+  circular_plots:
+    figure_size: [16, 18]
+    arrow_color: [255, 0, 0]    # Red for mean vector
+    scatter_color: [128, 128, 128]
+
+  # Dashboard overlay
+  dashboard:
+    enabled: true
+    position: "top-right"     # Options: top-left, top-right, bottom-left, bottom-right
+    opacity: 0.8
+    font_scale: 0.6
+    metrics_to_show:
+      - "speed"
+      - "acceleration"
+      - "cadence"
+      - "coordination_r"
+
+# ============================================================================
+# EXPORT
+# ============================================================================
+export:
+  formats:
+    - "csv"
+    - "json"
+    - "hdf5"
+
+  video:
+    codec: "mp4v"            # H.264 codec
+    fps: null                # Same as input if null
+    quality: 95              # 0-100
+
+  reports:
+    generate_pdf: true
+    include_plots: true
+
+# ============================================================================
+# TREADMILL CONFIGURATION (Optional)
+# ============================================================================
+treadmill:
+  enabled: false
+  belt_speed: 200            # mm/s
+  direction: "left"          # Belt moves left relative to camera

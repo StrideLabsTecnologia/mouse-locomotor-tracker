@@ -1,0 +1,280 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mouse-locomotor-tracker"
+version = "1.0.0"
+description = "Professional mouse locomotion tracking and biomechanical analysis"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Stride Labs", email = "gvillegas@stridelabs.cl"}
+]
+maintainers = [
+    {name = "Gustavo Villegas", email = "gvillegas@stridelabs.cl"}
+]
+keywords = [
+    "mouse",
+    "locomotion",
+    "tracking",
+    "biomechanics",
+    "neuroscience",
+    "computer-vision",
+    "deeplabcut",
+    "pose-estimation",
+    "gait-analysis"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Typing :: Typed",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "numpy>=1.21.0",
+    "opencv-python>=4.5.0",
+    "scipy>=1.7.0",
+    "pandas>=1.3.0",
+    "matplotlib>=3.5.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+cli = [
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+]
+dlc = [
+    "deeplabcut>=2.3.0",
+    "tensorflow>=2.10.0",
+]
+export = [
+    "h5py>=3.7.0",
+    "pynwb>=2.3.0",
+]
+dashboard = [
+    "streamlit>=1.28.0",
+    "plotly>=5.18.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.0.0",
+    "ruff>=0.1.0",
+    "pre-commit>=3.0.0",
+]
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.0.0",
+    "mkdocstrings[python]>=0.24.0",
+]
+all = [
+    "mouse-locomotor-tracker[cli,dlc,export,dashboard,dev,docs]",
+]
+
+[project.scripts]
+mlt = "cli:app"
+
+[project.urls]
+Homepage = "https://github.com/stridelabs/mouse-locomotor-tracker"
+Documentation = "https://stridelabs.github.io/mouse-locomotor-tracker"
+Repository = "https://github.com/stridelabs/mouse-locomotor-tracker"
+Issues = "https://github.com/stridelabs/mouse-locomotor-tracker/issues"
+Changelog = "https://github.com/stridelabs/mouse-locomotor-tracker/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["analysis*", "visualization*", "tracking*", "export*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml", "*.yml", "*.json"]
+
+# ============================================================================
+# Black - Code Formatter
+# ============================================================================
+[tool.black]
+line-length = 100
+target-version = ['py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | models
+)/
+'''
+
+# ============================================================================
+# isort - Import Sorting
+# ============================================================================
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+skip_glob = ["models/*", ".venv/*"]
+known_first_party = ["analysis", "visualization", "tracking", "export"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+
+# ============================================================================
+# Ruff - Fast Python Linter
+# ============================================================================
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "models",
+    "node_modules",
+    "venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+]
+ignore = [
+    "E501",   # line too long (handled by black)
+    "B008",   # do not perform function calls in argument defaults
+    "C901",   # too complex
+    "ARG001", # unused function argument
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["ARG001", "S101"]
+
+# ============================================================================
+# MyPy - Static Type Checker
+# ============================================================================
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+ignore_missing_imports = true
+exclude = [
+    "models/",
+    ".venv/",
+    "build/",
+    "dist/",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "cv2.*",
+    "scipy.*",
+    "pandas.*",
+    "matplotlib.*",
+    "deeplabcut.*",
+]
+ignore_missing_imports = true
+
+# ============================================================================
+# Pytest - Testing
+# ============================================================================
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "-ra",
+    "-q",
+    "--strict-markers",
+    "--cov=analysis",
+    "--cov=visualization",
+    "--cov=tracking",
+    "--cov=export",
+    "--cov-report=term-missing",
+    "--cov-report=html:coverage_html",
+]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "gpu: marks tests that require GPU",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+# ============================================================================
+# Coverage - Code Coverage
+# ============================================================================
+[tool.coverage.run]
+source = ["analysis", "visualization", "tracking", "export"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/models/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+show_missing = true
+precision = 2
+fail_under = 80
+
+[tool.coverage.html]
+directory = "coverage_html"

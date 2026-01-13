@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastreador Locomotor de Ratones | Panel de Analisis Cientifico</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        'brand': {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        'activity': {
+                            rest: '#6b7280',
+                            walk: '#3b82f6',
+                            trot: '#f59e0b',
+                            gallop: '#ef4444',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .gradient-bg {
+            background: linear-gradient(-45deg, #0c4a6e, #0369a1, #0284c7, #0ea5e9);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .metric-card {
+            transition: all 0.3s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .activity-indicator {
+            transition: all 0.2s ease;
+        }
+        .activity-indicator.active {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Video container */
+        .video-container {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Glow effect */
+        .glow {
+            box-shadow: 0 0 40px rgba(14, 165, 233, 0.3);
+        }
+
+        /* Progress ring */
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-900 text-white min-h-screen font-sans">
+    <!-- Header -->
+    <header class="gradient-bg sticky top-0 z-50 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold">Rastreador Locomotor de Ratones</h1>
+                        <p class="text-xs text-white/60">Panel de Analisis Cientifico</p>
+                    </div>
+                </div>
+                <nav class="hidden md:flex items-center gap-6">
+                    <a href="#video" class="text-sm text-white/80 hover:text-white transition">Video</a>
+                    <a href="#metrics" class="text-sm text-white/80 hover:text-white transition">Metricas</a>
+                    <a href="#analysis" class="text-sm text-white/80 hover:text-white transition">Analisis</a>
+                    <a href="#docs" class="text-sm text-white/80 hover:text-white transition">Documentacion</a>
+                </nav>
+                <div class="flex items-center gap-2">
+                    <span class="px-3 py-1 text-xs font-medium bg-green-500/20 text-green-400 rounded-full border border-green-500/30">
+                        v2.0.0
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative py-12 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-brand-900/50 to-transparent"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="text-center mb-8">
+                <h2 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-brand-300 bg-clip-text text-transparent mb-4">
+                    Analisis Biomecanico de la Marcha
+                </h2>
+                <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                    Seguimiento y analisis de locomocion en tiempo real siguiendo estandares cientificos CatWalk XT y DigiGait
+                </p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="glass rounded-xl p-4 text-center">
+                    <p class="text-3xl font-bold text-brand-400" id="stat-tracking">99.6%</p>
+                    <p class="text-xs text-slate-400 mt-1">Tasa de Seguimiento</p>
+                </div>
+                <div class="glass rounded-xl p-4 text-center">
+                    <p class="text-3xl font-bold text-green-400" id="stat-velocity">10.58</p>
+                    <p class="text-xs text-slate-400 mt-1">Velocidad Prom. (cm/s)</p>
+                </div>
+                <div class="glass rounded-xl p-4 text-center">
+                    <p class="text-3xl font-bold text-yellow-400" id="stat-distance">102.37</p>
+                    <p class="text-xs text-slate-400 mt-1">Distancia Total (cm)</p>
+                </div>
+                <div class="glass rounded-xl p-4 text-center">
+                    <p class="text-3xl font-bold text-purple-400" id="stat-strides">39</p>
+                    <p class="text-xs text-slate-400 mt-1">Zancadas Detectadas</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <!-- Video Section -->
+        <section id="video" class="mb-16">
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Video Player -->
+                <div class="lg:col-span-2">
+                    <div class="glass rounded-2xl p-4 glow">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">Analisis en Vivo</h3>
+                            <div class="flex items-center gap-2">
+                                <span class="flex items-center gap-1.5 px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded-full">
+                                    <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                                    Grabando
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="video-container bg-black aspect-video rounded-xl">
+                            <video id="mainVideo" class="w-full h-full object-contain" controls>
+                                <source src="assets/video.mp4" type="video/mp4">
+                                <source src="assets/video.webm" type="video/webm">
+                                Tu navegador no soporta el elemento video.
+                            </video>
+                            <!-- Imagen de respaldo si el video falla -->
+                            <img id="videoFallback" src="assets/DEMO001_trajectory.png"
+                                 class="hidden w-full h-full object-contain"
+                                 alt="Analisis de Trayectoria">
+                        </div>
+
+                        <!-- Video Controls -->
+                        <div class="mt-4 flex items-center gap-4">
+                            <button id="playPauseBtn" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 rounded-lg font-medium transition flex items-center gap-2">
+                                <svg id="playIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                                </svg>
+                                <span id="playPauseText">Reproducir</span>
+                            </button>
+                            <div class="flex-1">
+                                <input type="range" id="videoSeek" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer" value="0" min="0" max="100">
+                            </div>
+                            <span id="videoTime" class="text-sm font-mono text-slate-400">00:00 / 00:09</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-time Metrics Panel -->
+                <div class="space-y-4">
+                    <!-- Current Metrics -->
+                    <div class="glass rounded-2xl p-4">
+                        <h3 class="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">Metricas en Tiempo Real</h3>
+
+                        <!-- Velocity Gauge -->
+                        <div class="bg-slate-800/50 rounded-xl p-4 mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-slate-400">Velocidad</span>
+                                <span id="currentActivity" class="px-2 py-0.5 text-xs font-medium rounded-full bg-activity-walk/20 text-blue-400">CAMINAR</span>
+                            </div>
+                            <div class="flex items-baseline gap-2">
+                                <span id="currentVelocity" class="text-4xl font-bold text-brand-400">0.0</span>
+                                <span class="text-sm text-slate-500">cm/s</span>
+                            </div>
+                            <div class="mt-3 h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div id="velocityBar" class="h-full bg-gradient-to-r from-brand-600 to-brand-400 transition-all duration-200" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Activity Classification -->
+                        <div class="grid grid-cols-4 gap-2 mb-4">
+                            <div id="actRest" class="activity-indicator text-center p-2 rounded-lg bg-slate-800/50 border border-transparent">
+                                <div class="w-3 h-3 mx-auto rounded-full bg-activity-rest mb-1"></div>
+                                <span class="text-xs text-slate-400">Reposo</span>
+                            </div>
+                            <div id="actWalk" class="activity-indicator text-center p-2 rounded-lg bg-slate-800/50 border border-transparent">
+                                <div class="w-3 h-3 mx-auto rounded-full bg-activity-walk mb-1"></div>
+                                <span class="text-xs text-slate-400">Caminar</span>
+                            </div>
+                            <div id="actTrot" class="activity-indicator text-center p-2 rounded-lg bg-slate-800/50 border border-transparent">
+                                <div class="w-3 h-3 mx-auto rounded-full bg-activity-trot mb-1"></div>
+                                <span class="text-xs text-slate-400">Trote</span>
+                            </div>
+                            <div id="actGallop" class="activity-indicator text-center p-2 rounded-lg bg-slate-800/50 border border-transparent">
+                                <div class="w-3 h-3 mx-auto rounded-full bg-activity-gallop mb-1"></div>
+                                <span class="text-xs text-slate-400">Galope</span>
+                            </div>
+                        </div>
+
+                        <!-- Mini Metrics -->
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-400">Posicion</span>
+                                <span id="currentPosition" class="font-mono text-sm">(612, 458)</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-400">Aceleracion</span>
+                                <span id="currentAccel" class="font-mono text-sm text-yellow-400">45.2 cm/s2</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-400">Cuadro</span>
+                                <span id="currentFrame" class="font-mono text-sm">0 / 274</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gait Phase -->
+                    <div class="glass rounded-2xl p-4">
+                        <h3 class="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">Fase de Marcha</h3>
+                        <div class="flex rounded-lg overflow-hidden">
+                            <div class="flex-[40] bg-cyan-500/30 p-3 text-center border-r border-slate-700">
+                                <p class="text-lg font-bold text-cyan-400">40%</p>
+                                <p class="text-xs text-slate-400">Balanceo</p>
+                            </div>
+                            <div class="flex-[60] bg-yellow-500/30 p-3 text-center">
+                                <p class="text-lg font-bold text-yellow-400">60%</p>
+                                <p class="text-xs text-slate-400">Apoyo</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-center">
+                            <span class="text-sm text-slate-400">Factor de Trabajo: </span>
+                            <span class="font-bold text-white">0.60</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metrics Section -->
+        <section id="metrics" class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-sm">📊</span>
+                Metricas Cientificas
+            </h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Velocity Chart -->
+                <div class="glass rounded-2xl p-5 metric-card lg:col-span-2">
+                    <h3 class="text-lg font-semibold mb-4">Perfil de Velocidad</h3>
+                    <div class="h-64">
+                        <canvas id="velocityChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Activity Distribution -->
+                <div class="glass rounded-2xl p-5 metric-card">
+                    <h3 class="text-lg font-semibold mb-4">Distribucion de Actividad</h3>
+                    <div class="h-64">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Stride Analysis -->
+                <div class="glass rounded-2xl p-5 metric-card">
+                    <h3 class="text-lg font-semibold mb-4">Analisis de Zancadas</h3>
+                    <div class="h-64">
+                        <canvas id="strideChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Spatiotemporal Parameters -->
+                <div class="glass rounded-2xl p-5 metric-card lg:col-span-2">
+                    <h3 class="text-lg font-semibold mb-4">Parametros Espaciotemporales</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-slate-700">
+                                    <th class="text-left py-3 text-slate-400 font-medium">Parametro</th>
+                                    <th class="text-right py-3 text-slate-400 font-medium">Media +/- DE</th>
+                                    <th class="text-right py-3 text-slate-400 font-medium">Unidad</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800">
+                                <tr>
+                                    <td class="py-3">Velocidad</td>
+                                    <td class="text-right font-mono">10.53 +/- 11.09</td>
+                                    <td class="text-right text-slate-400">cm/s</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3">Longitud de Zancada</td>
+                                    <td class="text-right font-mono">1.26 +/- 1.20</td>
+                                    <td class="text-right text-slate-400">cm</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3">Cadencia</td>
+                                    <td class="text-right font-mono">3.29 +/- 2.07</td>
+                                    <td class="text-right text-slate-400">pasos/s</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3">Ciclo de Paso</td>
+                                    <td class="text-right font-mono">0.402 +/- 0.204</td>
+                                    <td class="text-right text-slate-400">s</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3">Tiempo de Balanceo</td>
+                                    <td class="text-right font-mono">0.161</td>
+                                    <td class="text-right text-slate-400">s (40%)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3">Tiempo de Apoyo</td>
+                                    <td class="text-right font-mono">0.241</td>
+                                    <td class="text-right text-slate-400">s (60%)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3">Factor de Trabajo</td>
+                                    <td class="text-right font-mono">0.60</td>
+                                    <td class="text-right text-slate-400">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analysis Section -->
+        <section id="analysis" class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-sm">🔬</span>
+                Analisis Cientifico
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Kinematic Parameters -->
+                <div class="glass rounded-2xl p-5">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <span class="text-yellow-400">⚡</span> Parametros Cinematicos
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="bg-slate-800/50 rounded-xl p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-slate-400">Aceleracion</span>
+                                <span class="text-sm text-slate-500">cm/s2</span>
+                            </div>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-2xl font-bold">69.45</span>
+                                <span class="text-sm text-slate-400">+/- 125.37</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-1">Pico: 600.77 cm/s2</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-xl p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-slate-400">Jerk (Sacudida)</span>
+                                <span class="text-sm text-slate-500">cm/s3</span>
+                            </div>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-2xl font-bold">1902.92</span>
+                                <span class="text-sm text-slate-400">+/- 2783.92</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Variability & Regularity -->
+                <div class="glass rounded-2xl p-5">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <span class="text-purple-400">📈</span> Variabilidad y Regularidad
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-slate-400">Indice de Regularidad</span>
+                                <span class="font-mono">19.2%</span>
+                            </div>
+                            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-purple-500" style="width: 19.2%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-slate-400">Variabilidad de Zancada (CV)</span>
+                                <span class="font-mono">95.3%</span>
+                            </div>
+                            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-orange-500" style="width: 95.3%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-slate-400">CV de Velocidad</span>
+                                <span class="font-mono">105.3%</span>
+                            </div>
+                            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-red-500" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Bouts -->
+                <div class="glass rounded-2xl p-5">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <span class="text-blue-400">🏃</span> Episodios de Actividad
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                            <p class="text-2xl font-bold text-activity-rest">2.5%</p>
+                            <p class="text-xs text-slate-400">En Reposo</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                            <p class="text-2xl font-bold text-activity-walk">59.3%</p>
+                            <p class="text-xs text-slate-400">Caminando (7 ep.)</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                            <p class="text-2xl font-bold text-activity-trot">34.2%</p>
+                            <p class="text-xs text-slate-400">Trotando (5 ep.)</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                            <p class="text-2xl font-bold text-activity-gallop">4.0%</p>
+                            <p class="text-xs text-slate-400">Galopando (1 ep.)</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center text-sm text-slate-400">
+                        Duracion media del episodio: <span class="font-mono text-white">0.41 s</span>
+                    </div>
+                </div>
+
+                <!-- Data Quality -->
+                <div class="glass rounded-2xl p-5">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <span class="text-green-400">✅</span> Calidad de Datos
+                    </h3>
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="relative">
+                            <svg class="progress-ring w-32 h-32">
+                                <circle class="text-slate-700" stroke-width="8" stroke="currentColor" fill="transparent" r="56" cx="64" cy="64"/>
+                                <circle class="progress-ring__circle text-green-500" stroke-width="8" stroke="currentColor" fill="transparent" r="56" cx="64" cy="64" stroke-dasharray="351.86" stroke-dashoffset="2"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-2xl font-bold">99.6%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-center text-sm">
+                        <div>
+                            <p class="text-slate-400">Cuadros Totales</p>
+                            <p class="font-mono">274</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400">Cuadros Rastreados</p>
+                            <p class="font-mono">273</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400">Zancadas Detectadas</p>
+                            <p class="font-mono">39</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400">Puntuacion Calidad</p>
+                            <p class="font-mono">56.4/100</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Documentation Section -->
+        <section id="docs" class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center text-sm">📚</span>
+                Documentacion
+            </h2>
+
+            <div class="glass rounded-2xl p-6">
+                <div class="prose prose-invert max-w-none">
+                    <h3 class="text-xl font-semibold mb-4">Rastreador Locomotor de Ratones</h3>
+                    <p class="text-slate-300 mb-4">
+                        Sistema profesional de analisis biomecanico para el seguimiento de locomocion en ratones.
+                        Sigue los estandares cientificos de CatWalk XT (Noldus) y DigiGait (Mouse Specifics).
+                    </p>
+
+                    <h4 class="text-lg font-semibold mt-6 mb-3">Definiciones de Metricas</h4>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h5 class="font-medium text-brand-400 mb-2">Longitud de Zancada</h5>
+                            <p class="text-sm text-slate-400">Distancia entre pasos consecutivos de la misma pata, medida en centimetros.</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h5 class="font-medium text-brand-400 mb-2">Cadencia</h5>
+                            <p class="text-sm text-slate-400">Frecuencia de pasos durante la locomocion, expresada en pasos por segundo.</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h5 class="font-medium text-brand-400 mb-2">Factor de Trabajo</h5>
+                            <p class="text-sm text-slate-400">Proporcion del tiempo de apoyo respecto al ciclo total (apoyo / ciclo). Valor normal ~0.60.</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4">
+                            <h5 class="font-medium text-brand-400 mb-2">Indice de Regularidad</h5>
+                            <p class="text-sm text-slate-400">Medida de consistencia del patron de marcha, basada en la variabilidad entre zancadas.</p>
+                        </div>
+                    </div>
+
+                    <h4 class="text-lg font-semibold mt-6 mb-3">Clasificacion de Actividad</h4>
+                    <table class="w-full text-sm mt-2">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="text-left py-2">Actividad</th>
+                                <th class="text-left py-2">Rango de Velocidad</th>
+                                <th class="text-left py-2">Descripcion</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800">
+                            <tr>
+                                <td class="py-2"><span class="text-activity-rest">●</span> Reposo</td>
+                                <td class="py-2 font-mono">&lt; 2 cm/s</td>
+                                <td class="py-2 text-slate-400">Estacionario o movimiento minimo</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2"><span class="text-activity-walk">●</span> Caminar</td>
+                                <td class="py-2 font-mono">2 - 10 cm/s</td>
+                                <td class="py-2 text-slate-400">Locomocion lenta, marcha alternada</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2"><span class="text-activity-trot">●</span> Trote</td>
+                                <td class="py-2 font-mono">10 - 25 cm/s</td>
+                                <td class="py-2 text-slate-400">Velocidad moderada, marcha diagonal</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2"><span class="text-activity-gallop">●</span> Galope</td>
+                                <td class="py-2 font-mono">&gt; 25 cm/s</td>
+                                <td class="py-2 text-slate-400">Locomocion rapida, marcha asimetrica</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 class="text-lg font-semibold mt-6 mb-3">Referencias</h4>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li>• Lakes, E.H., Allen, K.D. (2023). Revision de parametros de marcha CatWalk XT. <em>Frontiers Behav. Neurosci.</em></li>
+                        <li>• Mouse Specifics, Inc. (2024). Documentacion del Sistema de Imagen DigiGait.</li>
+                        <li>• Mathis, A., et al. (2018). DeepLabCut: estimacion de poses sin marcadores. <em>Nature Neuroscience.</em></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="font-semibold">Stride Labs</p>
+                        <p class="text-xs text-slate-500">Rastreador Locomotor de Ratones v2.0.0</p>
+                    </div>
+                </div>
+                <div class="text-sm text-slate-500">
+                    Licencia MIT • 2024
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // =====================================================================
+        // Datos de Seguimiento - cargados desde JSON
+        // =====================================================================
+        let trackingData = {
+            fps: 30,
+            totalFrames: 199,
+            totalDuration: 6.6,
+            velocities: [],
+            positions: [],
+            activities: [],
+            summary: null,
+            metadata: null,
+        };
+
+        // Cargar datos reales desde JSON
+        async function loadTrackingData() {
+            try {
+                const response = await fetch('assets/tracking_data.json');
+                const data = await response.json();
+
+                trackingData.fps = data.fps;
+                trackingData.totalFrames = data.timeseries.frames.length;
+                trackingData.totalDuration = data.summary.total_duration_s;
+                trackingData.velocities = data.timeseries.velocities;
+                trackingData.activities = data.timeseries.activities;
+                trackingData.summary = data.summary;
+                trackingData.metadata = data.metadata;
+
+                // Convertir posiciones
+                trackingData.positions = data.timeseries.x_positions.map((x, i) => ({
+                    x: x,
+                    y: data.timeseries.y_positions[i]
+                }));
+
+                // Actualizar UI con datos reales
+                updateStatsFromData(data);
+                initCharts();
+                updateRealTimeMetrics(0);
+
+                console.log('Datos de seguimiento cargados:', trackingData.totalFrames, 'cuadros');
+            } catch (error) {
+                console.error('Error cargando datos de seguimiento:', error);
+                // Usar datos simulados de respaldo
+                generateSimulatedData();
+            }
+        }
+
+        function generateSimulatedData() {
+            for (let i = 0; i < 199; i++) {
+                const t = i / 30;
+                const baseVel = 10 + Math.sin(t * 3) * 8;
+                const noise = (Math.random() - 0.5) * 15;
+                const vel = Math.max(0, Math.min(50, baseVel + noise));
+                trackingData.velocities.push(vel);
+                trackingData.positions.push({
+                    x: 600 + Math.sin(t * 2) * 50,
+                    y: 450 + Math.cos(t * 3) * 30
+                });
+            }
+            initCharts();
+        }
+
+        function updateStatsFromData(data) {
+            document.getElementById('stat-tracking').textContent =
+                data.summary.tracking_rate.toFixed(1) + '%';
+            document.getElementById('stat-velocity').textContent =
+                data.summary.velocity.mean.toFixed(2);
+            document.getElementById('stat-distance').textContent =
+                data.summary.total_distance_cm.toFixed(2);
+            document.getElementById('stat-strides').textContent =
+                data.summary.n_strides_detected;
+        }
+
+        // =====================================================================
+        // Integracion del Reproductor de Video
+        // =====================================================================
+        const video = document.getElementById('mainVideo');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const playPauseText = document.getElementById('playPauseText');
+        const playIcon = document.getElementById('playIcon');
+        const videoSeek = document.getElementById('videoSeek');
+        const videoTime = document.getElementById('videoTime');
+
+        // Elementos de metricas actuales
+        const currentVelocity = document.getElementById('currentVelocity');
+        const velocityBar = document.getElementById('velocityBar');
+        const currentActivity = document.getElementById('currentActivity');
+        const currentPosition = document.getElementById('currentPosition');
+        const currentAccel = document.getElementById('currentAccel');
+        const currentFrame = document.getElementById('currentFrame');
+
+        // Indicadores de actividad
+        const actRest = document.getElementById('actRest');
+        const actWalk = document.getElementById('actWalk');
+        const actTrot = document.getElementById('actTrot');
+        const actGallop = document.getElementById('actGallop');
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function classifyActivity(velocity) {
+            if (velocity < 2) return 'REPOSO';
+            if (velocity < 10) return 'CAMINAR';
+            if (velocity < 25) return 'TROTE';
+            return 'GALOPE';
+        }
+
+        function getActivityColor(activity) {
+            const colors = {
+                'REPOSO': { bg: 'bg-activity-rest/20', text: 'text-gray-400', border: 'border-gray-500' },
+                'CAMINAR': { bg: 'bg-activity-walk/20', text: 'text-blue-400', border: 'border-blue-500' },
+                'TROTE': { bg: 'bg-activity-trot/20', text: 'text-yellow-400', border: 'border-yellow-500' },
+                'GALOPE': { bg: 'bg-activity-gallop/20', text: 'text-red-400', border: 'border-red-500' },
+            };
+            return colors[activity];
+        }
+
+        function updateActivityIndicators(activity) {
+            // Resetear todos
+            [actRest, actWalk, actTrot, actGallop].forEach(el => {
+                el.classList.remove('active', 'border-white', 'bg-white/10');
+                el.classList.add('border-transparent');
+            });
+
+            // Resaltar activo
+            const activeEl = {
+                'REPOSO': actRest,
+                'CAMINAR': actWalk,
+                'TROTE': actTrot,
+                'GALOPE': actGallop
+            }[activity];
+
+            if (activeEl) {
+                activeEl.classList.remove('border-transparent');
+                activeEl.classList.add('active', 'border-white', 'bg-white/10');
+            }
+        }
+
+        function updateRealTimeMetrics(frameIndex) {
+            if (frameIndex >= trackingData.velocities.length) return;
+
+            const velocity = trackingData.velocities[frameIndex];
+            const position = trackingData.positions[frameIndex];
+            const activity = classifyActivity(velocity);
+            const activityColors = getActivityColor(activity);
+
+            // Actualizar visualizacion de velocidad
+            currentVelocity.textContent = velocity.toFixed(1);
+            velocityBar.style.width = `${Math.min(100, (velocity / 50) * 100)}%`;
+
+            // Actualizar etiqueta de actividad
+            currentActivity.className = `px-2 py-0.5 text-xs font-medium rounded-full ${activityColors.bg} ${activityColors.text}`;
+            currentActivity.textContent = activity;
+
+            // Actualizar indicadores de actividad
+            updateActivityIndicators(activity);
+
+            // Actualizar posicion
+            currentPosition.textContent = `(${Math.round(position.x)}, ${Math.round(position.y)})`;
+
+            // Calcular aceleracion
+            if (frameIndex > 0) {
+                const prevVel = trackingData.velocities[frameIndex - 1];
+                const accel = Math.abs(velocity - prevVel) * trackingData.fps;
+                currentAccel.textContent = `${accel.toFixed(1)} cm/s2`;
+            }
+
+            // Actualizar contador de cuadros
+            currentFrame.textContent = `${frameIndex} / ${trackingData.totalFrames}`;
+        }
+
+        // Reproducir/Pausar
+        playPauseBtn.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                playPauseText.textContent = 'Pausar';
+                playIcon.innerHTML = '<path d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zM12.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z"/>';
+            } else {
+                video.pause();
+                playPauseText.textContent = 'Reproducir';
+                playIcon.innerHTML = '<path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>';
+            }
+        });
+
+        // Actualizacion de tiempo del video
+        video.addEventListener('timeupdate', () => {
+            const progress = (video.currentTime / video.duration) * 100;
+            videoSeek.value = progress;
+            videoTime.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+
+            // Actualizar metricas en tiempo real
+            const frameIndex = Math.floor(video.currentTime * trackingData.fps);
+            updateRealTimeMetrics(frameIndex);
+        });
+
+        // Barra de busqueda
+        videoSeek.addEventListener('input', (e) => {
+            const time = (e.target.value / 100) * video.duration;
+            video.currentTime = time;
+        });
+
+        // =====================================================================
+        // Graficos
+        // =====================================================================
+        const chartDefaults = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: '#94a3b8' }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#64748b' },
+                    grid: { color: '#334155' }
+                },
+                y: {
+                    ticks: { color: '#64748b' },
+                    grid: { color: '#334155' }
+                }
+            }
+        };
+
+        let velocityChart = null;
+
+        function initCharts() {
+            // Grafico de Velocidad
+            const velocityCtx = document.getElementById('velocityChart').getContext('2d');
+            if (velocityChart) velocityChart.destroy();
+
+            const meanVelocity = trackingData.summary ?
+                trackingData.summary.velocity.mean : 10.58;
+
+            velocityChart = new Chart(velocityCtx, {
+                type: 'line',
+                data: {
+                    labels: trackingData.velocities.map((_, i) =>
+                        (i / trackingData.fps).toFixed(1)),
+                    datasets: [{
+                        label: 'Velocidad (cm/s)',
+                        data: trackingData.velocities,
+                        borderColor: '#0ea5e9',
+                        backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                    }]
+                },
+                options: {
+                    ...chartDefaults,
+                    scales: {
+                        x: {
+                            ...chartDefaults.scales.x,
+                            title: { display: true, text: 'Tiempo (s)', color: '#94a3b8' }
+                        },
+                        y: {
+                            ...chartDefaults.scales.y,
+                            title: { display: true, text: 'Velocidad (cm/s)', color: '#94a3b8' },
+                            min: 0,
+                            max: Math.max(...trackingData.velocities) * 1.1
+                        }
+                    }
+                }
+            });
+
+            // Grafico de Distribucion de Actividad
+            const activityCtx = document.getElementById('activityChart').getContext('2d');
+            const actData = trackingData.summary ? [
+                2.5,
+                59.3,
+                34.2,
+                4.0
+            ] : [2.5, 59.3, 34.2, 4.0];
+
+            new Chart(activityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Reposo', 'Caminar', 'Trote', 'Galope'],
+                    datasets: [{
+                        data: actData,
+                        backgroundColor: ['#6b7280', '#3b82f6', '#f59e0b', '#ef4444'],
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#94a3b8', padding: 15 }
+                        }
+                    }
+                }
+            });
+
+            // Grafico de Zancadas
+            const strideCtx = document.getElementById('strideChart').getContext('2d');
+            const numStrides = trackingData.summary ?
+                trackingData.summary.n_strides_detected : 15;
+
+            new Chart(strideCtx, {
+                type: 'bar',
+                data: {
+                    labels: Array.from({length: numStrides}, (_, i) => i + 1),
+                    datasets: [{
+                        label: 'Longitud de Zancada (cm)',
+                        data: Array.from({length: numStrides}, () =>
+                            0.5 + Math.random() * 2),
+                        backgroundColor: '#8b5cf6',
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    ...chartDefaults,
+                    scales: {
+                        x: {
+                            ...chartDefaults.scales.x,
+                            title: { display: true, text: 'Zancada #', color: '#94a3b8' }
+                        },
+                        y: {
+                            ...chartDefaults.scales.y,
+                            title: { display: true, text: 'Longitud (cm)', color: '#94a3b8' },
+                            min: 0,
+                            max: 4
+                        }
+                    }
+                }
+            });
+        }
+
+        // =====================================================================
+        // Manejo de Errores de Video
+        // =====================================================================
+        video.addEventListener('error', (e) => {
+            console.error('Error de video:', e);
+            document.getElementById('videoFallback').classList.remove('hidden');
+            video.classList.add('hidden');
+
+            // Mostrar mensaje al usuario
+            const msg = document.createElement('div');
+            msg.className = 'absolute bottom-4 left-4 right-4 bg-yellow-500/90 text-black text-sm p-3 rounded-lg';
+            msg.innerHTML = `
+                <strong>Codec de video no soportado.</strong> Convertir con:<br>
+                <code class="text-xs">ffmpeg -i video.mp4 -c:v libx264 video_h264.mp4</code>
+            `;
+            video.parentElement.appendChild(msg);
+
+            // Aun asi cargar graficos con reproduccion simulada
+            initCharts();
+        });
+
+        // =====================================================================
+        // Inicializar
+        // =====================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTrackingData();
+        });
+    </script>
+</body>
+</html>

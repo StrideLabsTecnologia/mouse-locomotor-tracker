@@ -1,0 +1,82 @@
+# Mouse Locomotor Tracker - Lateral View Markers Configuration
+# Based on Locomotor-Allodi2021
+# For kinematic analysis of joint angles
+
+name: "mouse_lateral"
+description: "Standard marker set for lateral (side) view of mouse locomotion"
+
+# DeepLabCut model configuration
+model:
+  name: "custom_lateral"
+  type: "custom"
+  custom_config: null  # Must be provided for lateral view
+
+# Marker definitions (proximal to distal order)
+markers:
+  - name: "crest"
+    description: "Iliac crest"
+    category: "pelvis"
+    joint_index: 0
+
+  - name: "hip"
+    description: "Hip joint"
+    category: "hindlimb"
+    joint_index: 1
+
+  - name: "knee"
+    description: "Knee joint"
+    category: "hindlimb"
+    joint_index: 2
+
+  - name: "ankle"
+    description: "Ankle joint"
+    category: "hindlimb"
+    joint_index: 3
+
+  - name: "foot"
+    description: "Metatarsal"
+    category: "hindlimb"
+    joint_index: 4
+
+  - name: "toe"
+    description: "Tip of toe"
+    category: "hindlimb"
+    joint_index: 5
+
+# Skeletal connections
+connections:
+  - ["crest", "hip"]
+  - ["hip", "knee"]
+  - ["knee", "ankle"]
+  - ["ankle", "foot"]
+  - ["foot", "toe"]
+
+# Joint angle definitions
+# Each joint angle is defined by 3 markers: proximal, joint, distal
+joint_angles:
+  - name: "hip_ang"
+    description: "Hip joint angle"
+    markers: ["crest", "hip", "knee"]
+    normal_range: [80, 150]  # degrees
+
+  - name: "knee_ang"
+    description: "Knee joint angle"
+    markers: ["hip", "knee", "ankle"]
+    normal_range: [60, 140]
+
+  - name: "ankle_ang"
+    description: "Ankle joint angle"
+    markers: ["knee", "ankle", "foot"]
+    normal_range: [70, 160]
+
+  - name: "foot_ang"
+    description: "Foot angle"
+    markers: ["ankle", "foot", "toe"]
+    normal_range: [90, 180]
+
+# Gait cycle detection
+gait_cycle:
+  reference_marker: "toe"  # Use toe y-position for cycle detection
+  swing_threshold: 0.03    # Normalized threshold for swing phase
+  min_cycle_duration: 0.1  # seconds
+  max_cycle_duration: 1.0  # seconds

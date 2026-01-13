@@ -1,0 +1,138 @@
+# Mouse Locomotor Tracker - Ventral View Markers Configuration
+# Based on Locomotor-Allodi2021 and EstimAI_
+# TOP 0.1% Configuration
+
+name: "mouse_ventral"
+description: "Standard marker set for ventral (bottom) view of mouse locomotion"
+
+# DeepLabCut model configuration
+model:
+  name: "superanimal-topviewmouse"
+  type: "pretrained"  # or "custom"
+  custom_config: null  # Path to custom config.yaml if type is "custom"
+
+# Marker definitions
+markers:
+  # Head markers
+  - name: "snout"
+    description: "Tip of the nose"
+    category: "head"
+    use_for_speed: true
+
+  - name: "snoutL"
+    description: "Left side of snout"
+    category: "head"
+    use_for_speed: true
+
+  - name: "snoutR"
+    description: "Right side of snout"
+    category: "head"
+    use_for_speed: true
+
+  # Forelimb markers
+  - name: "foreL"
+    description: "Left forepaw"
+    category: "forelimb"
+    use_for_coordination: true
+    limb_id: "LF"
+
+  - name: "foreR"
+    description: "Right forepaw"
+    category: "forelimb"
+    use_for_coordination: true
+    limb_id: "RF"
+
+  # Hindlimb markers
+  - name: "hindL"
+    description: "Left hindpaw"
+    category: "hindlimb"
+    use_for_coordination: true
+    limb_id: "LH"
+
+  - name: "hindR"
+    description: "Right hindpaw"
+    category: "hindlimb"
+    use_for_coordination: true
+    limb_id: "RH"
+
+  # Torso markers
+  - name: "torso"
+    description: "Center of torso"
+    category: "body"
+    use_for_speed: true
+
+  - name: "torsoL"
+    description: "Left side of torso"
+    category: "body"
+    use_for_speed: true
+
+  - name: "torsoR"
+    description: "Right side of torso"
+    category: "body"
+    use_for_speed: true
+
+  # Tail marker
+  - name: "tail"
+    description: "Base of tail"
+    category: "body"
+    use_for_speed: true
+
+# Skeletal connections for visualization
+connections:
+  - ["snout", "snoutL"]
+  - ["snout", "snoutR"]
+  - ["snout", "torso"]
+  - ["torso", "torsoL"]
+  - ["torso", "torsoR"]
+  - ["torso", "tail"]
+  - ["torsoL", "foreL"]
+  - ["torsoR", "foreR"]
+  - ["torsoL", "hindL"]
+  - ["torsoR", "hindR"]
+
+# Coordination pairs for circular statistics
+coordination_pairs:
+  - name: "LHRH"
+    description: "Hindlimb coordination (left-right)"
+    markers: ["hindL", "hindR"]
+    expected_phase: 180  # degrees, anti-phase for normal gait
+
+  - name: "LHLF"
+    description: "Homolateral left (hind-fore)"
+    markers: ["hindL", "foreL"]
+    expected_phase: 0
+
+  - name: "RHRF"
+    description: "Homolateral right (hind-fore)"
+    markers: ["hindR", "foreR"]
+    expected_phase: 0
+
+  - name: "LFRH"
+    description: "Diagonal 1 (left fore - right hind)"
+    markers: ["foreL", "hindR"]
+    expected_phase: 180
+
+  - name: "RFLH"
+    description: "Diagonal 2 (right fore - left hind)"
+    markers: ["foreR", "hindL"]
+    expected_phase: 180
+
+  - name: "LFRF"
+    description: "Forelimb coordination (left-right)"
+    markers: ["foreL", "foreR"]
+    expected_phase: 180
+
+# Markers for speed estimation (excludes paws)
+speed_markers:
+  - "tail"
+  - "snout"
+  - "snoutL"
+  - "snoutR"
+  - "torso"
+  - "torsoL"
+  - "torsoR"
+
+# Body length estimation markers
+body_length_markers:
+  front: ["snout", "snoutL", "snoutR"]
+  rear: ["tail"]

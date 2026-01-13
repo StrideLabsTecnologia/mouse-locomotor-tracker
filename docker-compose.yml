@@ -1,0 +1,124 @@
+# =============================================================================
+# Mouse Locomotor Tracker - Docker Compose
+# =============================================================================
+# Orchestration for development and production environments
+# =============================================================================
+
+version: "3.9"
+
+services:
+  # ---------------------------------------------------------------------------
+  # Main MLT Service
+  # ---------------------------------------------------------------------------
+  mlt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: mlt:latest
+    container_name: mlt-tracker
+    volumes:
+      - ./input:/app/input:ro
+      - ./output:/app/output
+      - ./models:/app/models:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MLT_OUTPUT_DIR=/app/output
+    command: ["--help"]
+
+  # ---------------------------------------------------------------------------
+  # Development Service (with hot reload)
+  # ---------------------------------------------------------------------------
+  mlt-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: mlt:dev
+    container_name: mlt-dev
+    volumes:
+      - .:/app
+      - ./input:/app/input
+      - ./output:/app/output
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MLT_DEBUG=1
+    stdin_open: true
+    tty: true
+    command: ["/bin/bash"]
+
+  # ---------------------------------------------------------------------------
+  # Test Runner
+  # ---------------------------------------------------------------------------
+  mlt-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: mlt:test
+    container_name: mlt-test
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: ["python", "-m", "pytest", "tests/", "-v", "--cov=analysis", "--cov=tracking"]
+
+  # ---------------------------------------------------------------------------
+  # Jupyter Notebook Service (for exploration)
+  # ---------------------------------------------------------------------------
+  mlt-jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: mlt:jupyter
+    container_name: mlt-jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+      - ./input:/app/input
+      - ./output:/app/output
+      - ./notebooks:/app/notebooks
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: >
+      /bin/bash -c "pip install jupyter jupyterlab &&
+      jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+      --NotebookApp.token='' --NotebookApp.password=''"
+
+# =============================================================================
+# Volumes for persistent data
+# =============================================================================
+volumes:
+  mlt-output:
+    driver: local
+  mlt-models:
+    driver: local
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  default:
+    name: mlt-network
+
+# =============================================================================
+# Usage Examples:
+# -----------------------------------------------------------------------------
+# Build all services:
+#   docker-compose build
+#
+# Run analysis:
+#   docker-compose run mlt process /app/input/video.mp4 --csv --json
+#
+# Development shell:
+#   docker-compose run mlt-dev
+#
+# Run tests:
+#   docker-compose run mlt-test
+#
+# Start Jupyter:
+#   docker-compose up mlt-jupyter
+#   Open: http://localhost:8888
+# =============================================================================

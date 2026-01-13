@@ -1,0 +1,201 @@
+
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Page setup
+\geometry{margin=2.5cm}
+
+% SI units setup
+\sisetup{
+    separate-uncertainty = true,
+    multi-part-units = single
+}
+
+\title{Gait Analysis Report\\
+\large Experiment: DEMO001}
+\author{Stride Labs\\
+\small Stride Labs}
+\date{2026-01-13}
+
+\begin{document}
+
+\maketitle
+
+% ============================================================================
+\section{Experiment Information}
+% ============================================================================
+
+\begin{table}[h]
+\centering
+\caption{Experiment and subject details}
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Experiment ID & DEMO001 \\
+Subject ID & MOUSE_TEST \\
+Species & Mus musculus \\
+Strain & C57BL/6 \\
+Sex & Unknown \\
+Age & N/A \\
+Weight & N/A \\
+Apparatus & Treadmill \\
+Software Version & 1.0.0 \\
+Date & 2026-01-13 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================================
+\section{Methods}
+% ============================================================================
+
+Locomotion was recorded using a treadmill apparatus. Video was acquired at
+\SI{30}{\hertz} and analyzed using Mouse Locomotor Tracker (v1.0.0).
+Position tracking was performed using motion-based detection. Spatiotemporal
+gait parameters were calculated following established protocols
+\cite{catwalk2023, digigait2021}.
+
+% ============================================================================
+\section{Results}
+% ============================================================================
+
+\subsection{Spatiotemporal Parameters}
+
+\begin{table}[h]
+\centering
+\caption{Spatiotemporal gait parameters. Values are mean $\pm$ SD.}
+\label{tab:spatiotemporal}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Parameter} & \textbf{Value} & \textbf{Unit} \\
+\midrule
+Velocity & $10.53 \pm 11.09$ & \si{\centi\meter\per\second} \\
+Maximum Velocity & 84.01 & \si{\centi\meter\per\second} \\
+Stride Length & $1.26 \pm 1.20$ & \si{\centi\meter} \\
+Cadence & $3.29 \pm 2.07$ & steps/s \\
+Step Cycle & $0.402 \pm 0.204$ & \si{\second} \\
+Swing Time & 40\% & - \\
+Stance Time & 60\% & - \\
+Duty Factor & 0.60 & - \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Kinematic Parameters}
+
+\begin{table}[h]
+\centering
+\caption{Kinematic parameters derived from velocity profile.}
+\label{tab:kinematic}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Parameter} & \textbf{Value} & \textbf{Unit} \\
+\midrule
+Mean Acceleration & $69.45 \pm 125.37$ & \si{\centi\meter\per\second\squared} \\
+Peak Acceleration & 600.77 & \si{\centi\meter\per\second\squared} \\
+Mean Jerk & $1902.92 \pm 2783.92$ & \si{\centi\meter\per\second\cubed} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Activity Classification}
+
+The subject exhibited the following activity distribution:
+\begin{itemize}
+    \item Resting: 2.5\%
+    \item Walking ($<$\SI{10}{\centi\meter\per\second}): 59.3\%
+    \item Trotting (\SI{10}{}-\SI{25}{\centi\meter\per\second}): 34.2\%
+    \item Galloping ($>$\SI{25}{\centi\meter\per\second}): 4.0\%
+\end{itemize}
+
+Total distance traveled: \SI{71.8}{\centi\meter} over \SI{6.6}{\second}.
+
+\subsection{Gait Variability}
+
+\begin{table}[h]
+\centering
+\caption{Gait variability and regularity metrics.}
+\label{tab:variability}
+\begin{tabular}{lc}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Regularity Index & 19.2\% \\
+Stride Variability (CV) & 95.3\% \\
+Velocity Stability & -5.3\% \\
+Velocity CV & 105.3\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Data Quality}
+
+Tracking was successful for 100.0\% of frames
+(199/199 frames).
+A total of 15 complete strides were detected.
+Overall data quality score: 56.4/100.
+
+
+% ============================================================================
+\section{Figures}
+% ============================================================================
+
+\begin{figure}[h]
+\centering
+% \includegraphics[width=0.8\textwidth]{velocity_timeseries.pdf}
+\caption{Velocity profile over time. Dashed line indicates mean velocity.
+Background shading indicates activity classification (gray: rest, blue: walk,
+yellow: trot, red: gallop).}
+\label{fig:velocity}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+% \includegraphics[width=0.8\textwidth]{gait_summary.pdf}
+\caption{Comprehensive gait analysis summary showing (A) velocity statistics,
+(B) stride metrics, (C) activity distribution, (D) gait phase composition,
+(E) kinematic parameters, (F) regularity metrics, (G) distance and duration,
+(H) data quality, and (I) summary table.}
+\label{fig:summary}
+\end{figure}
+
+
+% ============================================================================
+\section{References}
+% ============================================================================
+
+\begin{thebibliography}{9}
+
+\bibitem{catwalk2023}
+Lakes, E.H., Allen, K.D.
+\newblock CatWalk XT gait parameters: a review of reported parameters in
+pre-clinical studies of multiple central nervous system and peripheral
+nervous system disease models.
+\newblock \textit{Front. Behav. Neurosci.} 17, 1147784 (2023).
+
+\bibitem{digigait2021}
+Mouse Specifics, Inc.
+\newblock DigiGait Imaging System.
+\newblock \url{https://mousespecifics.com/digigait/} (2021).
+
+\bibitem{deeplabcut}
+Mathis, A., et al.
+\newblock DeepLabCut: markerless pose estimation of user-defined body parts
+with deep learning.
+\newblock \textit{Nat. Neurosci.} 21, 1281-1289 (2018).
+
+\end{thebibliography}
+
+\end{document}

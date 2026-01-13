@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/stridelabs/mouse-locomotor-tracker#readme
+    about: Check the documentation before creating an issue
+  - name: Discussions
+    url: https://github.com/stridelabs/mouse-locomotor-tracker/discussions
+    about: Ask questions and discuss ideas
+  - name: Security Vulnerabilities
+    url: https://github.com/stridelabs/mouse-locomotor-tracker/security/policy
+    about: Report security vulnerabilities privately
