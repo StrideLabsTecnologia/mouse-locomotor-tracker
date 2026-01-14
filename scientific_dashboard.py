@@ -573,6 +573,49 @@ def load_video_base64(video_path: str) -> str:
     return base64.b64encode(video_bytes).decode()
 
 
+# Path configuration for video
+VIDEO_PATH = Path(__file__).parent / "assets" / "video.mp4"
+VIDEO_FRAMES_DIR = Path("/tmp/claude/video_frames")
+
+
+@st.cache_resource(show_spinner="Extracting video frames...")
+def extract_video_frames(video_path: Path, output_dir: Path) -> int:
+    """Extract frames from video file using OpenCV.
+
+    Returns the total number of frames extracted.
+    Cached to avoid re-extraction on every rerun.
+    """
+    if cv2 is None:
+        st.warning("OpenCV not available. Video frames cannot be extracted.")
+        return 0
+
+    # Create output directory
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Check if frames already exist
+    existing_frames = list(output_dir.glob("frame_*.jpg"))
+    if existing_frames:
+        return len(existing_frames)
+
+    # Open video
+    cap = cv2.VideoCapture(str(video_path))
+    if not cap.isOpened():
+        st.error(f"Cannot open video: {video_path}")
+        return 0
+
+    frame_count = 0
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        frame_count += 1
+        frame_path = output_dir / f"frame_{frame_count:04d}.jpg"
+        cv2.imwrite(str(frame_path), frame, [cv2.IMWRITE_JPEG_QUALITY, 90])
+
+    cap.release()
+    return frame_count
+
+
 # =============================================================================
 # Locomotion Analysis Functions (Based on Locomotor-Allodi2021)
 # =============================================================================
@@ -1941,24 +1984,31 @@ def main():
         ''', unsafe_allow_html=True)
 
         # Video + Mouse Animation SIDE BY SIDE
-        video_frames_dir = Path("/tmp/claude/video_frames")
+        # Auto-extract video frames if video exists
+        video_total_frames = 0
+        if VIDEO_PATH.exists():
+            video_total_frames = extract_video_frames(VIDEO_PATH, VIDEO_FRAMES_DIR)
+
         video_col, mouse_col = st.columns([1, 1])
 
         with video_col:
-            if video_frames_dir.exists():
+            if video_total_frames > 0:
                 st.markdown('<p class="section-header">🎬 Video</p>', unsafe_allow_html=True)
 
-                # Map data frame to video frame (video has 274 frames at 30fps = 9.13s)
-                video_total_frames = 274
+                # Map data frame to video frame dynamically
                 data_duration = df['time'].max()
 
                 # Calculate which video frame corresponds to current time
                 video_frame_idx = int((current_time / data_duration) * (video_total_frames - 1))
                 video_frame_idx = max(1, min(video_frame_idx + 1, video_total_frames))
 
-                frame_path = video_frames_dir / f"frame_{video_frame_idx:04d}.jpg"
+                frame_path = VIDEO_FRAMES_DIR / f"frame_{video_frame_idx:04d}.jpg"
                 if frame_path.exists():
                     st.image(str(frame_path), use_container_width=True)
+            elif VIDEO_PATH.exists():
+                st.warning("⚠️ OpenCV required to extract video frames")
+            else:
+                st.info("📹 No video available (place video.mp4 in assets/)")
 
         with mouse_col:
             st.markdown('<p class="section-header">🐭 Tracking</p>', unsafe_allow_html=True)
