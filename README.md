@@ -1,9 +1,9 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/OpenCV-4.5%2B-green?logo=opencv&logoColor=white" alt="OpenCV">
-  <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License">
-  <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code Style">
-  <img src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit" alt="Pre-commit">
+  <img src="https://img.shields.io/badge/Licencia-MIT-yellow" alt="Licencia">
+  <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Estilo de Código">
+  <img src="https://img.shields.io/badge/pre--commit-habilitado-brightgreen?logo=pre-commit" alt="Pre-commit">
 </p>
 
 <h1 align="center">
@@ -12,33 +12,33 @@
   <br>
 </h1>
 
-<h4 align="center">Professional biomechanical analysis for rodent locomotion research</h4>
+<h4 align="center">Análisis biomecánico profesional para investigación de locomoción en roedores</h4>
 
 <p align="center">
-  <a href="#key-features">Key Features</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#quick-start">Quick Start</a> •
-  <a href="#cli-usage">CLI Usage</a> •
-  <a href="#api-reference">API</a> •
-  <a href="#citation">Citation</a>
+  <a href="#características">Características</a> •
+  <a href="#instalación">Instalación</a> •
+  <a href="#inicio-rápido">Inicio Rápido</a> •
+  <a href="#uso-del-cli">CLI</a> •
+  <a href="#api">API</a> •
+  <a href="#citación">Citación</a>
 </p>
 
 ---
 
-## Overview
+## Descripción General
 
-**Mouse Locomotor Tracker (MLT)** is a professional-grade Python toolkit for automated tracking and biomechanical analysis of rodent locomotion. Designed for neuroscience research, it provides:
+**Mouse Locomotor Tracker (MLT)** es un toolkit profesional en Python para tracking automatizado y análisis biomecánico de locomoción en roedores. Diseñado para investigación en neurociencia, proporciona:
 
-- **Motion-based tracking** optimized for treadmill experiments
-- **Biomechanical metrics**: velocity, acceleration, gait cycles, coordination
-- **Publication-ready visualizations**: trajectory overlays, polar plots, speed profiles
-- **Scientific export formats**: CSV, JSON, HDF5, NWB
+- **Tracking basado en movimiento** optimizado para experimentos en cinta
+- **Métricas biomecánicas**: velocidad, aceleración, ciclos de marcha, coordinación
+- **Visualizaciones para publicación**: overlays de trayectoria, gráficos polares, perfiles de velocidad
+- **Formatos de exportación científicos**: CSV, JSON, HDF5, NWB
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
 ║   ███╗   ███╗██╗  ████████╗                                  ║
 ║   ████╗ ████║██║  ╚══██╔══╝  Mouse Locomotor Tracker        ║
-║   ██╔████╔██║██║     ██║     Professional Edition v1.0      ║
+║   ██╔████╔██║██║     ██║     Professional Edition v1.1      ║
 ║   ██║╚██╔╝██║██║     ██║                                     ║
 ║   ██║ ╚═╝ ██║███████╗██║     Stride Labs                    ║
 ║   ╚═╝     ╚═╝╚══════╝╚═╝                                     ║
@@ -47,148 +47,362 @@
 
 ---
 
-## Key Features
+## Características
 
 ### Tracking
-- **Motion-based detection**: Frame differencing optimized for treadmill ROI
-- **100% tracking rate** on standard treadmill videos
-- **Temporal smoothing**: Exponential moving average for stable tracking
-- **Optional DeepLabCut integration**: 27 anatomical keypoints
+- **Detección basada en movimiento**: Diferencia de frames optimizada para ROI de cinta
+- **100% de tasa de tracking** en videos estándar de cinta
+- **Suavizado temporal**: Promedio móvil exponencial para tracking estable
+- **Integración opcional con DeepLabCut**: 27 puntos anatómicos
 
-### Analysis
-| Module | Metrics |
-|--------|---------|
-| **Velocity** | Instantaneous, average, peak speed; acceleration |
-| **Coordination** | Circular statistics, phase coupling, Rayleigh test |
-| **Gait Cycles** | Cadence, stride length, duty factor, symmetry |
-| **Kinematics** | Joint angles, range of motion, limb lengths |
+### Análisis
+| Módulo | Métricas |
+|--------|----------|
+| **Velocidad** | Velocidad instantánea, promedio, máxima; aceleración |
+| **Coordinación** | Estadísticas circulares, acoplamiento de fase, test de Rayleigh |
+| **Ciclos de Marcha** | Cadencia, longitud de zancada, factor de servicio, simetría |
+| **Cinemática** | Ángulos articulares, rango de movimiento, longitudes de extremidades |
 
-### Visualization
-- Trajectory overlays with gradient trails
-- Circular coordination plots (polar)
-- Speed profiles with acceleration overlay
-- Real-time dashboard with gauges
-- Publication-ready figure export
+### Visualización
+- Overlays de trayectoria con trails de gradiente
+- Gráficos de coordinación circular (polar)
+- Perfiles de velocidad con overlay de aceleración
+- Dashboard en tiempo real con medidores
+- Exportación de figuras para publicación
 
-### Export
-- **CSV**: Frame-by-frame tracking data
-- **JSON**: Complete results with metadata
-- **HDF5**: Efficient binary format for large datasets
-- **NWB**: Neurodata Without Borders (neuroscience standard)
+### Exportación
+- **CSV**: Datos de tracking frame por frame
+- **JSON**: Resultados completos con metadatos
+- **HDF5**: Formato binario eficiente para grandes datasets
+- **NWB**: Neurodata Without Borders (estándar de neurociencia)
 
 ---
 
-## Installation
+## Instalación
 
-### Basic Installation
+### Requisitos Previos
 
-```bash
-pip install mouse-locomotor-tracker
-```
+- Python 3.9 o superior
+- pip (gestor de paquetes de Python)
+- Git
+- OpenCV (para procesamiento de video)
+- FFmpeg (opcional, para extracción de frames)
 
-### With CLI Support (Recommended)
+---
 
-```bash
-pip install mouse-locomotor-tracker[cli]
-```
-
-### Full Installation (All Features)
+### Linux (Ubuntu/Debian)
 
 ```bash
-pip install mouse-locomotor-tracker[all]
-```
+# 1. Actualizar sistema e instalar dependencias
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y python3 python3-pip python3-venv git ffmpeg
 
-### Development Installation
+# 2. Instalar dependencias de OpenCV
+sudo apt install -y libopencv-dev python3-opencv
 
-```bash
-git clone https://github.com/stridelabs/mouse-locomotor-tracker.git
+# 3. Clonar repositorio
+git clone https://github.com/StrideLabsTecnologia/mouse-locomotor-tracker.git
 cd mouse-locomotor-tracker
-pip install -e ".[dev]"
-pre-commit install
+
+# 4. Crear entorno virtual
+python3 -m venv .venv
+source .venv/bin/activate
+
+# 5. Instalar dependencias
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# 6. Verificar instalación
+python -c "import cv2; print(f'OpenCV: {cv2.__version__}')"
+
+# 7. Ejecutar dashboard
+streamlit run scientific_dashboard.py
 ```
 
 ---
 
-## Quick Start
-
-### Command Line
+### Arch Linux
 
 ```bash
-# Process video with default settings
-mlt process video.mp4 -o tracked.mp4
+# 1. Actualizar sistema
+sudo pacman -Syu
 
-# With CSV export and preview
-mlt process video.mp4 -o tracked.mp4 --csv --preview
+# 2. Instalar dependencias
+sudo pacman -S python python-pip git opencv hdf5 ffmpeg
 
-# Get video info
-mlt info video.mp4
+# 3. Instalar dependencias de Python para OpenCV
+sudo pacman -S python-numpy python-scipy
+
+# 4. Clonar repositorio
+git clone https://github.com/StrideLabsTecnologia/mouse-locomotor-tracker.git
+cd mouse-locomotor-tracker
+
+# 5. Crear entorno virtual
+python -m venv .venv
+source .venv/bin/activate
+
+# 6. Instalar dependencias
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# 7. Verificar instalación
+python -c "import cv2; print(f'OpenCV: {cv2.__version__}')"
+
+# 8. Ejecutar dashboard
+streamlit run scientific_dashboard.py
 ```
 
-### Python API
+**Nota para Arch Linux**: Si usas `yay` o `paru` para AUR:
+```bash
+# Alternativa con python-opencv desde AUR (más completo)
+yay -S python-opencv
+```
+
+---
+
+### macOS
+
+```bash
+# 1. Instalar Homebrew (si no está instalado)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# 2. Instalar dependencias
+brew install python@3.11 git opencv ffmpeg
+
+# 3. Clonar repositorio
+git clone https://github.com/StrideLabsTecnologia/mouse-locomotor-tracker.git
+cd mouse-locomotor-tracker
+
+# 4. Crear entorno virtual
+python3 -m venv .venv
+source .venv/bin/activate
+
+# 5. Instalar dependencias
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# 6. Verificar instalación
+python -c "import cv2; print(f'OpenCV: {cv2.__version__}')"
+
+# 7. Ejecutar dashboard
+streamlit run scientific_dashboard.py
+```
+
+**Nota para Apple Silicon (M1/M2/M3)**:
+```bash
+# Si hay problemas con OpenCV, instalar con conda
+brew install miniforge
+conda create -n mlt python=3.11
+conda activate mlt
+conda install -c conda-forge opencv
+pip install -r requirements.txt
+```
+
+---
+
+### Windows
+
+#### Opción 1: PowerShell (Recomendado)
+
+```powershell
+# 1. Instalar Python desde https://www.python.org/downloads/
+# Marcar "Add Python to PATH" durante la instalación
+
+# 2. Instalar Git desde https://git-scm.com/download/win
+
+# 3. Abrir PowerShell como Administrador y clonar repositorio
+git clone https://github.com/StrideLabsTecnologia/mouse-locomotor-tracker.git
+cd mouse-locomotor-tracker
+
+# 4. Crear entorno virtual
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+# 5. Instalar dependencias
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# 6. Verificar instalación
+python -c "import cv2; print(f'OpenCV: {cv2.__version__}')"
+
+# 7. Ejecutar dashboard
+streamlit run scientific_dashboard.py
+```
+
+#### Opción 2: WSL2 (Windows Subsystem for Linux)
+
+```powershell
+# 1. Habilitar WSL2 (PowerShell como Administrador)
+wsl --install -d Ubuntu
+
+# 2. Reiniciar y abrir Ubuntu
+
+# 3. Seguir instrucciones de Linux (Ubuntu/Debian) arriba
+```
+
+#### Opción 3: Anaconda/Miniconda
+
+```powershell
+# 1. Instalar Miniconda desde https://docs.conda.io/en/latest/miniconda.html
+
+# 2. Abrir Anaconda Prompt
+conda create -n mlt python=3.11
+conda activate mlt
+
+# 3. Instalar OpenCV y dependencias
+conda install -c conda-forge opencv numpy scipy pandas
+
+# 4. Clonar e instalar
+git clone https://github.com/StrideLabsTecnologia/mouse-locomotor-tracker.git
+cd mouse-locomotor-tracker
+pip install -r requirements.txt
+
+# 5. Ejecutar dashboard
+streamlit run scientific_dashboard.py
+```
+
+---
+
+### Docker (Multiplataforma)
+
+```bash
+# 1. Construir imagen
+docker build -t mouse-locomotor-tracker .
+
+# 2. Ejecutar contenedor
+docker run -p 8501:8501 mouse-locomotor-tracker
+
+# 3. Abrir en navegador: http://localhost:8501
+```
+
+**Docker Compose**:
+```bash
+docker-compose up
+```
+
+---
+
+### Instalación de Desarrollo
+
+```bash
+# Clonar con submódulos
+git clone --recursive https://github.com/StrideLabsTecnologia/mouse-locomotor-tracker.git
+cd mouse-locomotor-tracker
+
+# Crear entorno virtual
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# .\.venv\Scripts\Activate.ps1  # Windows
+
+# Instalar en modo desarrollo
+pip install -e ".[dev]"
+
+# Configurar pre-commit hooks
+pre-commit install
+
+# Ejecutar tests
+pytest tests/ -v
+```
+
+---
+
+## Inicio Rápido
+
+### Dashboard Científico (Recomendado)
+
+```bash
+# Activar entorno virtual
+source .venv/bin/activate  # Linux/macOS
+# .\.venv\Scripts\Activate.ps1  # Windows
+
+# Ejecutar dashboard
+streamlit run scientific_dashboard.py
+```
+
+El dashboard se abrirá en `http://localhost:8501` con:
+- Video sincronizado del experimento
+- Animación de tracking en tiempo real
+- Gráficos de velocidad, aceleración y cadencia
+- Exportación de datos
+
+### Línea de Comandos
+
+```bash
+# Procesar video con configuración por defecto
+python cli.py process video.mp4 -o tracked.mp4
+
+# Con exportación CSV y preview
+python cli.py process video.mp4 -o tracked.mp4 --csv --preview
+
+# Obtener información del video
+python cli.py info video.mp4
+```
+
+### API de Python
 
 ```python
 from analysis import VelocityAnalyzer, GaitCycleDetector
 from visualization import TrajectoryVisualizer
 
-# Analyze velocity
+# Analizar velocidad
 analyzer = VelocityAnalyzer(frame_rate=30, pixel_to_mm=0.1)
 metrics = analyzer.analyze(x_coords, y_coords)
 
-print(f"Average Speed: {metrics.mean_speed:.2f} cm/s")
-print(f"Peak Speed: {metrics.max_speed:.2f} cm/s")
-print(f"Distance: {metrics.total_distance:.1f} cm")
+print(f"Velocidad Promedio: {metrics.mean_speed:.2f} cm/s")
+print(f"Velocidad Máxima: {metrics.max_speed:.2f} cm/s")
+print(f"Distancia Total: {metrics.total_distance:.1f} cm")
 
-# Detect gait cycles
+# Detectar ciclos de marcha
 detector = GaitCycleDetector(fps=30)
 gait = detector.detect_cycles(stride_signal, x_positions)
 
-print(f"Cadence: {gait.cadence:.2f} Hz")
-print(f"Stride Length: {gait.mean_stride_length:.2f} cm")
+print(f"Cadencia: {gait.cadence:.2f} Hz")
+print(f"Longitud de Zancada: {gait.mean_stride_length:.2f} cm")
 ```
 
 ---
 
-## CLI Usage
+## Uso del CLI
 
-### Process Command
+### Comando Process
 
 ```bash
-mlt process INPUT [OPTIONS]
+python cli.py process INPUT [OPCIONES]
 
-Arguments:
-  INPUT                 Input video file path
+Argumentos:
+  INPUT                 Ruta del archivo de video de entrada
 
-Options:
-  -o, --output PATH     Output video path
-  -p, --preview         Show preview window
-  -m, --max-frames INT  Limit frames to process
-  --csv                 Export tracking data to CSV
-  --json                Export results to JSON
-  --help                Show this message and exit
+Opciones:
+  -o, --output PATH     Ruta del video de salida
+  -p, --preview         Mostrar ventana de preview
+  -m, --max-frames INT  Limitar frames a procesar
+  --csv                 Exportar datos de tracking a CSV
+  --json                Exportar resultados a JSON
+  --help                Mostrar ayuda
 ```
 
-### Examples
+### Ejemplos
 
 ```bash
-# Basic processing
-mlt process experiment_001.mp4
+# Procesamiento básico
+python cli.py process experimento_001.mp4
 
-# Full analysis with exports
-mlt process experiment_001.mp4 \
-    --output results/tracked.mp4 \
+# Análisis completo con exportaciones
+python cli.py process experimento_001.mp4 \
+    --output resultados/tracked.mp4 \
     --csv \
     --json \
     --max-frames 1000
 
-# Quick preview
-mlt process video.mp4 --preview --max-frames 100
+# Preview rápido
+python cli.py process video.mp4 --preview --max-frames 100
 ```
 
 ---
 
-## API Reference
+## API
 
-### Analysis Module
+### Módulo de Análisis
 
 ```python
 from analysis import (
@@ -198,23 +412,23 @@ from analysis import (
     JointAngleAnalyzer,
 )
 
-# Velocity Analysis
+# Análisis de Velocidad
 analyzer = VelocityAnalyzer(frame_rate=30, pixel_to_mm=0.1)
 metrics = analyzer.analyze(x, y)
-# Returns: VelocityMetrics(mean_speed, max_speed, acceleration, ...)
+# Retorna: VelocityMetrics(mean_speed, max_speed, acceleration, ...)
 
-# Coordination Analysis
+# Análisis de Coordinación
 coord = CircularCoordinationAnalyzer()
 stats = coord.analyze_pair(phases_a, phases_b)
-# Returns: CircularStatistics(mean_angle, R, rayleigh_z, p_value)
+# Retorna: CircularStatistics(mean_angle, R, rayleigh_z, p_value)
 
-# Gait Cycle Detection
+# Detección de Ciclos de Marcha
 detector = GaitCycleDetector(fps=30, min_cycle_duration=0.1)
 gait = detector.detect_cycles(stride_signal, x_positions)
-# Returns: GaitMetrics(cadence, stride_length, duty_factor, ...)
+# Retorna: GaitMetrics(cadence, stride_length, duty_factor, ...)
 ```
 
-### Visualization Module
+### Módulo de Visualización
 
 ```python
 from visualization import (
@@ -224,121 +438,161 @@ from visualization import (
     VideoGenerator,
 )
 
-# Trajectory overlay
+# Overlay de trayectoria
 viz = TrajectoryVisualizer(trail_length=50, color_scheme='velocity')
 frame_with_overlay = viz.draw(frame, positions, velocities)
 
-# Polar coordination plot
+# Gráfico de coordinación polar
 plotter = CoordinationPlotter()
-fig = plotter.plot_pair(phases, title="LH-RH Coordination")
-fig.savefig("coordination.png", dpi=300)
+fig = plotter.plot_pair(phases, title="Coordinación LH-RH")
+fig.savefig("coordinacion.png", dpi=300)
 
-# Generate annotated video
+# Generar video anotado
 generator = VideoGenerator(fps=30, codec='h264')
 generator.process_video(input_path, output_path, tracking_data)
 ```
 
 ---
 
-## Project Structure
+## Estructura del Proyecto
 
 ```
 mouse-locomotor-tracker/
-├── analysis/              # Biomechanical analysis
-│   ├── velocity.py        # Speed & acceleration
-│   ├── coordination.py    # Circular statistics
-│   ├── gait_cycles.py     # Cycle detection
-│   ├── kinematics.py      # Joint angles
-│   └── metrics.py         # Data structures
-├── visualization/         # Plotting & video
+├── analysis/              # Análisis biomecánico
+│   ├── velocity.py        # Velocidad y aceleración
+│   ├── coordination.py    # Estadísticas circulares
+│   ├── gait_cycles.py     # Detección de ciclos
+│   ├── kinematics.py      # Ángulos articulares
+│   └── metrics.py         # Estructuras de datos
+├── visualization/         # Gráficos y video
 │   ├── trajectory_overlay.py
 │   ├── circular_plots.py
 │   ├── speed_plots.py
 │   ├── dashboard.py
 │   └── video_generator.py
-├── tracking/              # Pose estimation
-│   ├── dlc_adapter.py     # DeepLabCut wrapper
-│   ├── marker_config.py   # Keypoint definitions
-│   └── track_processor.py # Post-processing
-├── export/                # Data export
+├── tracking/              # Estimación de pose
+│   ├── dlc_adapter.py     # Wrapper de DeepLabCut
+│   ├── marker_config.py   # Definiciones de keypoints
+│   └── track_processor.py # Post-procesamiento
+├── export/                # Exportación de datos
 │   ├── csv_exporter.py
 │   ├── json_exporter.py
 │   └── report_generator.py
-├── tests/                 # Test suite
-├── docs/                  # Documentation
-├── cli.py                 # Command-line interface
-├── main.py                # Entry point
-└── pyproject.toml         # Project configuration
+├── assets/                # Recursos
+│   └── video.mp4          # Video de demostración
+├── tests/                 # Suite de tests
+├── docs/                  # Documentación
+├── cli.py                 # Interfaz de línea de comandos
+├── scientific_dashboard.py # Dashboard Streamlit
+└── pyproject.toml         # Configuración del proyecto
 ```
 
 ---
 
-## Metrics Reference
+## Referencia de Métricas
 
-### Velocity Metrics
+### Métricas de Velocidad
 
-| Metric | Unit | Description |
-|--------|------|-------------|
-| `mean_speed` | cm/s | Average instantaneous speed |
-| `max_speed` | cm/s | Peak speed recorded |
-| `min_speed` | cm/s | Minimum speed (excluding stops) |
-| `total_distance` | cm | Cumulative distance traveled |
-| `acceleration` | cm/s² | Rate of speed change |
+| Métrica | Unidad | Descripción |
+|---------|--------|-------------|
+| `mean_speed` | cm/s | Velocidad instantánea promedio |
+| `max_speed` | cm/s | Velocidad máxima registrada |
+| `min_speed` | cm/s | Velocidad mínima (excluyendo paradas) |
+| `total_distance` | cm | Distancia total recorrida |
+| `acceleration` | cm/s² | Tasa de cambio de velocidad |
 
-### Coordination Metrics
+### Métricas de Coordinación
 
-| Metric | Range | Description |
-|--------|-------|-------------|
-| `mean_angle` | -180° to 180° | Mean phase relationship |
-| `R` | 0 to 1 | Resultant vector length (coordination strength) |
-| `rayleigh_z` | ≥0 | Rayleigh test statistic |
-| `p_value` | 0 to 1 | Statistical significance |
+| Métrica | Rango | Descripción |
+|---------|-------|-------------|
+| `mean_angle` | -180° a 180° | Relación de fase media |
+| `R` | 0 a 1 | Longitud del vector resultante (fuerza de coordinación) |
+| `rayleigh_z` | ≥0 | Estadístico del test de Rayleigh |
+| `p_value` | 0 a 1 | Significancia estadística |
 
-### Gait Metrics
+### Métricas de Marcha
 
-| Metric | Unit | Description |
-|--------|------|-------------|
-| `cadence` | Hz | Steps per second |
-| `stride_length` | cm | Distance per cycle |
-| `duty_factor` | ratio | Stance/cycle duration |
-| `symmetry_index` | % | Left-right symmetry |
+| Métrica | Unidad | Descripción |
+|---------|--------|-------------|
+| `cadence` | Hz | Pasos por segundo |
+| `stride_length` | cm | Distancia por ciclo |
+| `duty_factor` | ratio | Duración stance/ciclo |
+| `symmetry_index` | % | Simetría izquierda-derecha |
 
 ---
 
-## Citation
+## Solución de Problemas
 
-If you use MLT in your research, please cite:
+### Error: "OpenCV not found"
+
+```bash
+# Linux
+sudo apt install python3-opencv
+
+# macOS
+brew install opencv
+pip install opencv-python
+
+# Windows
+pip install opencv-python
+```
+
+### Error: "Streamlit command not found"
+
+```bash
+pip install streamlit
+# o
+python -m streamlit run scientific_dashboard.py
+```
+
+### El video no se muestra en el dashboard
+
+El dashboard extrae automáticamente los frames del video `assets/video.mp4`. Si no existe:
+
+```bash
+# Verificar que existe el video
+ls -la assets/video.mp4
+
+# Si usas tu propio video, copiarlo a assets/
+cp tu_video.mp4 assets/video.mp4
+```
+
+---
+
+## Citación
+
+Si usas MLT en tu investigación, por favor cita:
 
 ```bibtex
-@software{mlt2024,
+@software{mlt2025,
   author = {Stride Labs},
-  title = {Mouse Locomotor Tracker: Professional Biomechanical Analysis},
-  year = {2024},
-  url = {https://github.com/stridelabs/mouse-locomotor-tracker},
-  version = {1.0.0}
+  title = {Mouse Locomotor Tracker: Análisis Biomecánico Profesional},
+  year = {2025},
+  url = {https://github.com/StrideLabsTecnologia/mouse-locomotor-tracker},
+  version = {1.1.0}
 }
 ```
 
 ---
 
-## Contributing
+## Contribuir
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+¡Las contribuciones son bienvenidas! Por favor consulta [CONTRIBUTING.md](CONTRIBUTING.md) para las guías.
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Fork del repositorio
+2. Crear rama de feature (`git checkout -b feature/nueva-caracteristica`)
+3. Commit de cambios (`git commit -m 'feat: agregar nueva característica'`)
+4. Push a la rama (`git push origin feature/nueva-caracteristica`)
+5. Abrir Pull Request
 
 ---
 
-## License
+## Licencia
 
-MIT License - see [LICENSE](LICENSE) for details.
+Licencia MIT - ver [LICENSE](LICENSE) para detalles.
 
 ---
 
 <p align="center">
-  Made with ❤️ by <a href="https://stridelabs.cl">Stride Labs</a>
+  Hecho con cariño por <a href="https://stridelabs.cl">Stride Labs</a>
 </p>

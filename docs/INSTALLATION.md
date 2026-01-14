@@ -1,105 +1,105 @@
-# Installation Guide
+# Guía de Instalación
 
-Complete installation instructions for Mouse Locomotor Tracker.
+Instrucciones completas de instalación para Mouse Locomotor Tracker.
 
-## Table of Contents
+## Tabla de Contenidos
 
-1. [System Requirements](#system-requirements)
-2. [Installation Methods](#installation-methods)
-   - [pip Installation](#pip-installation)
-   - [Conda Installation](#conda-installation)
-   - [Development Installation](#development-installation)
-3. [GPU Configuration](#gpu-configuration-for-deeplabcut)
-4. [Troubleshooting](#troubleshooting)
+1. [Requisitos del Sistema](#requisitos-del-sistema)
+2. [Métodos de Instalación](#métodos-de-instalación)
+   - [Instalación con pip](#instalación-con-pip)
+   - [Instalación con Conda](#instalación-con-conda)
+   - [Instalación de Desarrollo](#instalación-de-desarrollo)
+3. [Configuración de GPU](#configuración-de-gpu-para-deeplabcut)
+4. [Solución de Problemas](#solución-de-problemas)
 
-## System Requirements
+## Requisitos del Sistema
 
-### Minimum Requirements
+### Requisitos Mínimos
 
-| Component | Requirement |
-|-----------|-------------|
-| OS | Windows 10+, macOS 10.14+, Ubuntu 18.04+ |
-| Python | 3.8, 3.9, 3.10, or 3.11 |
-| RAM | 8 GB minimum, 16 GB recommended |
-| Storage | 2 GB for base installation |
-| GPU | Optional (required for DeepLabCut inference) |
+| Componente | Requisito |
+|-----------|-----------|
+| SO | Windows 10+, macOS 10.14+, Ubuntu 18.04+ |
+| Python | 3.8, 3.9, 3.10, o 3.11 |
+| RAM | 8 GB mínimo, 16 GB recomendado |
+| Almacenamiento | 2 GB para instalación base |
+| GPU | Opcional (requerido para inferencia DeepLabCut) |
 
-### Recommended for GPU Acceleration
+### Recomendado para Aceleración GPU
 
-| Component | Requirement |
-|-----------|-------------|
-| GPU | NVIDIA with CUDA support |
+| Componente | Requisito |
+|-----------|-----------|
+| GPU | NVIDIA con soporte CUDA |
 | CUDA | 11.2+ |
 | cuDNN | 8.1+ |
-| VRAM | 6 GB minimum |
+| VRAM | 6 GB mínimo |
 
-## Installation Methods
+## Métodos de Instalación
 
-### pip Installation
+### Instalación con pip
 
-The simplest method for most users:
+El método más simple para la mayoría de usuarios:
 
 ```bash
-# Create and activate virtual environment (recommended)
+# Crear y activar entorno virtual (recomendado)
 python -m venv locomotor-env
 source locomotor-env/bin/activate  # Linux/macOS
-# OR
+# O
 locomotor-env\Scripts\activate  # Windows
 
-# Install from PyPI (when available)
+# Instalar desde PyPI (cuando esté disponible)
 pip install mouse-locomotor-tracker
 
-# Or install from GitHub
+# O instalar desde GitHub
 pip install git+https://github.com/stridelabs/mouse-locomotor-tracker.git
 ```
 
-### Conda Installation
+### Instalación con Conda
 
-Recommended for users who need DeepLabCut integration:
+Recomendado para usuarios que necesitan integración con DeepLabCut:
 
 ```bash
-# Create conda environment
+# Crear entorno conda
 conda create -n locomotor python=3.10 -y
 conda activate locomotor
 
-# Install core dependencies
+# Instalar dependencias principales
 conda install numpy pandas scipy matplotlib h5py -y
 
-# Install DeepLabCut (optional, for pose estimation)
+# Instalar DeepLabCut (opcional, para estimación de pose)
 conda install -c conda-forge deeplabcut -y
 
-# Clone and install Mouse Locomotor Tracker
+# Clonar e instalar Mouse Locomotor Tracker
 git clone https://github.com/stridelabs/mouse-locomotor-tracker.git
 cd mouse-locomotor-tracker
 pip install -e .
 ```
 
-### Development Installation
+### Instalación de Desarrollo
 
-For contributors and developers:
+Para contribuidores y desarrolladores:
 
 ```bash
-# Clone repository
+# Clonar repositorio
 git clone https://github.com/stridelabs/mouse-locomotor-tracker.git
 cd mouse-locomotor-tracker
 
-# Create virtual environment
+# Crear entorno virtual
 python -m venv venv
 source venv/bin/activate
 
-# Install in development mode with all dependencies
+# Instalar en modo desarrollo con todas las dependencias
 pip install -e ".[dev]"
 
-# Install pre-commit hooks
+# Instalar pre-commit hooks
 pre-commit install
 
-# Verify installation
+# Verificar instalación
 pytest tests/ -v
 ```
 
-## Dependencies
+## Dependencias
 
-### Core Dependencies
+### Dependencias Principales
 
 ```
 numpy>=1.20.0
@@ -110,17 +110,17 @@ h5py>=3.0.0
 PyYAML>=6.0
 ```
 
-### Optional Dependencies
+### Dependencias Opcionales
 
 ```
-# For DeepLabCut integration
+# Para integración DeepLabCut
 deeplabcut>=2.2.0
 
-# For video processing
+# Para procesamiento de video
 opencv-python>=4.5.0
 ffmpeg-python>=0.2.0
 
-# For development
+# Para desarrollo
 pytest>=7.0.0
 pytest-cov>=3.0.0
 black>=22.0.0
@@ -128,68 +128,68 @@ flake8>=4.0.0
 mypy>=0.950
 ```
 
-## GPU Configuration for DeepLabCut
+## Configuración de GPU para DeepLabCut
 
-DeepLabCut requires GPU support for efficient pose estimation. Follow these steps for GPU configuration:
+DeepLabCut requiere soporte GPU para estimación de pose eficiente. Sigue estos pasos para configuración GPU:
 
-### NVIDIA GPU Setup (Linux)
+### Configuración GPU NVIDIA (Linux)
 
 ```bash
-# Check NVIDIA driver
+# Verificar driver NVIDIA
 nvidia-smi
 
-# Install CUDA toolkit (Ubuntu example)
-# Visit: https://developer.nvidia.com/cuda-downloads
+# Instalar CUDA toolkit (ejemplo Ubuntu)
+# Visita: https://developer.nvidia.com/cuda-downloads
 
-# Install cuDNN
-# Visit: https://developer.nvidia.com/cudnn
+# Instalar cuDNN
+# Visita: https://developer.nvidia.com/cudnn
 
-# Verify CUDA installation
+# Verificar instalación CUDA
 nvcc --version
 ```
 
-### NVIDIA GPU Setup (Windows)
+### Configuración GPU NVIDIA (Windows)
 
-1. Download and install NVIDIA drivers from [nvidia.com/drivers](https://www.nvidia.com/drivers)
-2. Install CUDA Toolkit from [developer.nvidia.com/cuda-downloads](https://developer.nvidia.com/cuda-downloads)
-3. Install cuDNN from [developer.nvidia.com/cudnn](https://developer.nvidia.com/cudnn)
-4. Add CUDA to PATH:
+1. Descarga e instala drivers NVIDIA desde [nvidia.com/drivers](https://www.nvidia.com/drivers)
+2. Instala CUDA Toolkit desde [developer.nvidia.com/cuda-downloads](https://developer.nvidia.com/cuda-downloads)
+3. Instala cuDNN desde [developer.nvidia.com/cudnn](https://developer.nvidia.com/cudnn)
+4. Agrega CUDA al PATH:
    ```
    C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.x\bin
    C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.x\libnvvp
    ```
 
-### TensorFlow GPU Configuration
+### Configuración TensorFlow GPU
 
 ```bash
-# Install TensorFlow with GPU support
+# Instalar TensorFlow con soporte GPU
 pip install tensorflow-gpu>=2.5.0
 
-# Verify GPU detection
+# Verificar detección GPU
 python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
 ```
 
-### CPU-Only Installation
+### Instalación Solo CPU
 
-If you don't have a GPU or only need to run analysis (not pose estimation):
+Si no tienes GPU o solo necesitas ejecutar análisis (no estimación de pose):
 
 ```bash
-# Install without GPU dependencies
+# Instalar sin dependencias GPU
 pip install mouse-locomotor-tracker[cpu]
 
-# Or manually exclude GPU packages
+# O excluir manualmente paquetes GPU
 pip install tensorflow-cpu>=2.5.0
 ```
 
-## Environment Variables
+## Variables de Entorno
 
-Configure these environment variables for optimal performance:
+Configura estas variables de entorno para rendimiento óptimo:
 
 ```bash
-# Linux/macOS (.bashrc or .zshrc)
+# Linux/macOS (.bashrc o .zshrc)
 export MLT_DATA_DIR="$HOME/locomotor_data"
 export MLT_CONFIG_DIR="$HOME/.config/locomotor"
-export TF_CPP_MIN_LOG_LEVEL=2  # Reduce TensorFlow verbosity
+export TF_CPP_MIN_LOG_LEVEL=2  # Reducir verbosidad TensorFlow
 
 # Windows (PowerShell)
 $env:MLT_DATA_DIR = "$HOME\locomotor_data"
@@ -197,38 +197,38 @@ $env:MLT_CONFIG_DIR = "$HOME\.config\locomotor"
 $env:TF_CPP_MIN_LOG_LEVEL = 2
 ```
 
-## Verification
+## Verificación
 
-Verify your installation with these tests:
+Verifica tu instalación con estos tests:
 
 ```bash
-# Check version
+# Verificar versión
 python -c "import mouse_locomotor_tracker; print(mouse_locomotor_tracker.__version__)"
 
-# Run basic import test
+# Ejecutar test básico de importación
 python -c "
 from mouse_locomotor_tracker import LocomotorPipeline
 from mouse_locomotor_tracker.analysis import VelocityAnalyzer
 from mouse_locomotor_tracker.tracking import VideoMetadata, MarkerSet
-print('All imports successful!')
+print('¡Todas las importaciones exitosas!')
 "
 
-# Run test suite
+# Ejecutar suite de tests
 pytest tests/ -v
 
-# Check DeepLabCut availability (optional)
+# Verificar disponibilidad DeepLabCut (opcional)
 python -c "
 try:
     import deeplabcut
-    print(f'DeepLabCut version: {deeplabcut.__version__}')
+    print(f'Versión DeepLabCut: {deeplabcut.__version__}')
 except ImportError:
-    print('DeepLabCut not installed (optional)')
+    print('DeepLabCut no instalado (opcional)')
 "
 ```
 
-## Docker Installation
+## Instalación Docker
 
-For isolated environments using Docker:
+Para entornos aislados usando Docker:
 
 ```dockerfile
 # Dockerfile
@@ -236,146 +236,146 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install system dependencies
+# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy and install package
+# Copiar e instalar paquete
 COPY . .
 RUN pip install --no-cache-dir -e .
 
-# Run tests
+# Ejecutar tests
 CMD ["pytest", "tests/", "-v"]
 ```
 
-Build and run:
+Construir y ejecutar:
 
 ```bash
-# Build image
+# Construir imagen
 docker build -t locomotor-tracker .
 
-# Run container
+# Ejecutar contenedor
 docker run -it locomotor-tracker
 
-# Run with mounted data
-docker run -v /path/to/data:/data locomotor-tracker python analyze.py
+# Ejecutar con datos montados
+docker run -v /ruta/a/datos:/data locomotor-tracker python analyze.py
 ```
 
-## Troubleshooting
+## Solución de Problemas
 
-### Common Issues
+### Problemas Comunes
 
-#### Import Error: No module named 'mouse_locomotor_tracker'
+#### Error de Importación: No module named 'mouse_locomotor_tracker'
 
 ```bash
-# Ensure package is installed
+# Asegurar que el paquete está instalado
 pip list | grep mouse-locomotor
 
-# Reinstall in development mode
+# Reinstalar en modo desarrollo
 pip install -e .
 ```
 
-#### NumPy/SciPy Version Conflicts
+#### Conflictos de Versión NumPy/SciPy
 
 ```bash
-# Reinstall compatible versions
+# Reinstalar versiones compatibles
 pip uninstall numpy scipy -y
 pip install numpy>=1.20.0 scipy>=1.7.0
 ```
 
-#### DeepLabCut Import Errors
+#### Errores de Importación DeepLabCut
 
 ```bash
-# Install with conda (recommended for DLC)
+# Instalar con conda (recomendado para DLC)
 conda install -c conda-forge deeplabcut
 
-# Check TensorFlow compatibility
+# Verificar compatibilidad TensorFlow
 python -c "import tensorflow as tf; print(tf.__version__)"
 ```
 
-#### GPU Not Detected
+#### GPU No Detectada
 
 ```bash
-# Check CUDA installation
+# Verificar instalación CUDA
 nvcc --version
 nvidia-smi
 
-# Check TensorFlow GPU
+# Verificar GPU TensorFlow
 python -c "
 import tensorflow as tf
 gpus = tf.config.list_physical_devices('GPU')
 if gpus:
-    print(f'Found {len(gpus)} GPU(s)')
+    print(f'Encontradas {len(gpus)} GPU(s)')
 else:
-    print('No GPU found')
+    print('No se encontró GPU')
 "
 ```
 
-#### Memory Errors with Large Videos
+#### Errores de Memoria con Videos Grandes
 
 ```python
-# Process videos in chunks
+# Procesar videos en chunks
 from mouse_locomotor_tracker import LocomotorPipeline
 
 pipeline = LocomotorPipeline(config={
-    'chunk_size': 10000,  # Process 10k frames at a time
+    'chunk_size': 10000,  # Procesar 10k frames a la vez
     'memory_efficient': True
 })
 ```
 
-### Platform-Specific Issues
+### Problemas Específicos por Plataforma
 
 #### macOS Apple Silicon (M1/M2)
 
 ```bash
-# Install miniforge for ARM64
+# Instalar miniforge para ARM64
 brew install miniforge
 
-# Create environment
+# Crear entorno
 conda create -n locomotor python=3.10
 conda activate locomotor
 
-# Install with ARM64 optimized packages
+# Instalar con paquetes optimizados ARM64
 conda install numpy pandas scipy matplotlib -y
-pip install tensorflow-macos tensorflow-metal  # Apple GPU support
+pip install tensorflow-macos tensorflow-metal  # Soporte GPU Apple
 ```
 
-#### Windows Long Path Issues
+#### Problemas de Rutas Largas en Windows
 
-Enable long paths in Windows Registry:
+Habilita rutas largas en el Registro de Windows:
 ```powershell
-# Run as Administrator
+# Ejecutar como Administrador
 New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
     -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
 ```
 
-### Getting Help
+### Obtener Ayuda
 
-If you encounter issues not covered here:
+Si encuentras problemas no cubiertos aquí:
 
-1. Check [GitHub Issues](https://github.com/stridelabs/mouse-locomotor-tracker/issues)
-2. Search existing issues before creating new ones
-3. Provide:
-   - Operating system and version
-   - Python version (`python --version`)
-   - Package versions (`pip freeze`)
-   - Full error traceback
-   - Minimal code to reproduce
+1. Revisa [GitHub Issues](https://github.com/stridelabs/mouse-locomotor-tracker/issues)
+2. Busca issues existentes antes de crear nuevos
+3. Proporciona:
+   - Sistema operativo y versión
+   - Versión de Python (`python --version`)
+   - Versiones de paquetes (`pip freeze`)
+   - Traceback completo del error
+   - Código mínimo para reproducir
 
-## Updating
+## Actualización
 
-### Update to Latest Version
+### Actualizar a la Última Versión
 
 ```bash
 # pip
 pip install --upgrade mouse-locomotor-tracker
 
-# From GitHub
+# Desde GitHub
 pip install --upgrade git+https://github.com/stridelabs/mouse-locomotor-tracker.git
 
-# Development version
+# Versión de desarrollo
 cd mouse-locomotor-tracker
 git pull origin main
 pip install -e .
@@ -383,4 +383,4 @@ pip install -e .
 
 ### Changelog
 
-See [CHANGELOG.md](../CHANGELOG.md) for version history and migration guides.
+Ver [CHANGELOG.md](../CHANGELOG.md) para historial de versiones y guías de migración.

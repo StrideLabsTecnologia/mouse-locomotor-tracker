@@ -1,28 +1,28 @@
-## Description
+## Descripción
 
-<!-- Provide a clear and concise description of the changes -->
+<!-- Proporciona una descripción clara y concisa de los cambios -->
 
-## Type of Change
+## Tipo de Cambio
 
-<!-- Mark the relevant option with an 'x' -->
+<!-- Marca la opción relevante con una 'x' -->
 
-- [ ] Bug fix (non-breaking change fixing an issue)
-- [ ] New feature (non-breaking change adding functionality)
-- [ ] Breaking change (fix or feature causing existing functionality to change)
-- [ ] Documentation update
-- [ ] Performance improvement
-- [ ] Code refactoring (no functional changes)
-- [ ] Test coverage improvement
+- [ ] Corrección de error (cambio no disruptivo que corrige un problema)
+- [ ] Nueva funcionalidad (cambio no disruptivo que agrega funcionalidad)
+- [ ] Cambio disruptivo (corrección o funcionalidad que causa cambios en funcionalidad existente)
+- [ ] Actualización de documentación
+- [ ] Mejora de rendimiento
+- [ ] Refactorización de código (sin cambios funcionales)
+- [ ] Mejora de cobertura de tests
 
-## Related Issues
+## Issues Relacionados
 
-<!-- Link any related issues using #issue_number -->
+<!-- Enlaza cualquier issue relacionado usando #numero_issue -->
 
-Closes #
+Cierra #
 
-## Changes Made
+## Cambios Realizados
 
-<!-- List the specific changes made -->
+<!-- Lista los cambios específicos realizados -->
 
 -
 -
@@ -30,62 +30,62 @@ Closes #
 
 ## Testing
 
-<!-- Describe how you tested your changes -->
+<!-- Describe cómo probaste tus cambios -->
 
-### Test Commands Run
+### Comandos de Test Ejecutados
 
 ```bash
-# Commands used to test
+# Comandos usados para probar
 pytest tests/ -v
 ```
 
-### Test Results
+### Resultados de Tests
 
-- [ ] All existing tests pass
-- [ ] New tests added for new functionality
-- [ ] Manual testing completed
+- [ ] Todos los tests existentes pasan
+- [ ] Se agregaron nuevos tests para la nueva funcionalidad
+- [ ] Se completó el testing manual
 
-## Screenshots/Videos
+## Capturas de Pantalla/Videos
 
-<!-- If applicable, add screenshots or videos showing the changes -->
+<!-- Si aplica, agrega capturas de pantalla o videos mostrando los cambios -->
 
-## Checklist
+## Lista de Verificación
 
-### Code Quality
+### Calidad de Código
 
-- [ ] My code follows the project's style guidelines
-- [ ] I have performed a self-review of my code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] My changes generate no new warnings
+- [ ] Mi código sigue las guías de estilo del proyecto
+- [ ] He realizado una auto-revisión de mi código
+- [ ] He comentado mi código, particularmente en áreas difíciles de entender
+- [ ] Mis cambios no generan nuevas advertencias
 
-### Documentation
+### Documentación
 
-- [ ] I have updated the documentation accordingly
-- [ ] I have updated the CHANGELOG.md
+- [ ] He actualizado la documentación correspondiente
+- [ ] He actualizado el CHANGELOG.md
 
 ### Testing
 
-- [ ] I have added tests that prove my fix/feature works
-- [ ] New and existing unit tests pass locally
-- [ ] Code coverage has not decreased
+- [ ] He agregado tests que prueban que mi corrección/funcionalidad funciona
+- [ ] Los tests unitarios nuevos y existentes pasan localmente
+- [ ] La cobertura de código no ha disminuido
 
-### Security
+### Seguridad
 
-- [ ] My changes do not introduce security vulnerabilities
-- [ ] I have not committed any secrets or credentials
+- [ ] Mis cambios no introducen vulnerabilidades de seguridad
+- [ ] No he committeado secretos o credenciales
 
-## Performance Impact
+## Impacto en Rendimiento
 
-<!-- If applicable, describe any performance implications -->
+<!-- Si aplica, describe cualquier implicación de rendimiento -->
 
-- [ ] No performance impact
-- [ ] Performance improved
-- [ ] Minor performance decrease (justified by feature value)
+- [ ] Sin impacto en rendimiento
+- [ ] Rendimiento mejorado
+- [ ] Disminución menor de rendimiento (justificada por valor de la funcionalidad)
 
-## Additional Notes
+## Notas Adicionales
 
-<!-- Any additional information for reviewers -->
+<!-- Cualquier información adicional para los revisores -->
 
 ---
 
-**Thank you for your contribution!**
+**¡Gracias por tu contribución!**

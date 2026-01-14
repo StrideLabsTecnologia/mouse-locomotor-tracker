@@ -1,119 +1,120 @@
-# Security Policy
+# Política de Seguridad
 
-## Supported Versions
+## Versiones Soportadas
 
-| Version | Supported          |
+| Versión | Soportada          |
 | ------- | ------------------ |
+| 1.1.x   | :white_check_mark: |
 | 1.0.x   | :white_check_mark: |
 | < 1.0   | :x:                |
 
-## Reporting a Vulnerability
+## Reportar una Vulnerabilidad
 
-We take security seriously in Mouse Locomotor Tracker. If you discover a security vulnerability, please follow these steps:
+Tomamos la seguridad muy en serio en Mouse Locomotor Tracker. Si descubres una vulnerabilidad de seguridad, por favor sigue estos pasos:
 
-### 1. Do NOT Create a Public Issue
+### 1. NO Crees un Issue Público
 
-Security vulnerabilities should not be reported through public GitHub issues.
+Las vulnerabilidades de seguridad no deben reportarse a través de issues públicos de GitHub.
 
-### 2. Report Privately
+### 2. Reporta de Forma Privada
 
-Send an email to: **security@stridelabs.cl**
+Envía un correo electrónico a: **security@stridelabs.cl**
 
-Include:
-- Description of the vulnerability
-- Steps to reproduce
-- Potential impact
-- Suggested fix (if any)
+Incluye:
+- Descripción de la vulnerabilidad
+- Pasos para reproducir
+- Impacto potencial
+- Corrección sugerida (si la hay)
 
-### 3. Response Timeline
+### 3. Cronograma de Respuesta
 
-| Phase | Timeline |
-|-------|----------|
-| Initial response | Within 48 hours |
-| Vulnerability assessment | Within 7 days |
-| Fix development | Within 30 days |
-| Public disclosure | After fix is released |
+| Fase | Plazo |
+|------|-------|
+| Respuesta inicial | Dentro de 48 horas |
+| Evaluación de vulnerabilidad | Dentro de 7 días |
+| Desarrollo de corrección | Dentro de 30 días |
+| Divulgación pública | Después de liberar la corrección |
 
-### 4. What to Expect
+### 4. Qué Esperar
 
-- Acknowledgment of your report within 48 hours
-- Regular updates on the progress
-- Credit in the security advisory (if desired)
-- We will NOT take legal action against researchers who follow responsible disclosure
+- Reconocimiento de tu reporte dentro de 48 horas
+- Actualizaciones regulares sobre el progreso
+- Crédito en el aviso de seguridad (si lo deseas)
+- NO tomaremos acciones legales contra investigadores que sigan la divulgación responsable
 
-## Security Measures
+## Medidas de Seguridad
 
-### Code Security
+### Seguridad del Código
 
-- **Static Analysis**: Bandit security linter in CI/CD
-- **Dependency Scanning**: Regular audits with `pip-audit`
-- **Type Checking**: MyPy for type safety
-- **Pre-commit Hooks**: Automated security checks
+- **Análisis Estático**: Linter de seguridad Bandit en CI/CD
+- **Escaneo de Dependencias**: Auditorías regulares con `pip-audit`
+- **Verificación de Tipos**: MyPy para seguridad de tipos
+- **Pre-commit Hooks**: Verificaciones de seguridad automatizadas
 
-### Docker Security
+### Seguridad de Docker
 
-- Non-root user execution
-- Multi-stage builds (minimal attack surface)
-- No secrets in images
-- Read-only file systems where possible
+- Ejecución con usuario no-root
+- Builds multi-etapa (superficie de ataque mínima)
+- Sin secretos en las imágenes
+- Sistemas de archivos de solo lectura donde sea posible
 
-### Data Handling
+### Manejo de Datos
 
-- No personal data collection
-- Video files processed locally only
-- No network calls during analysis
-- Output files contain only tracking data
+- Sin recolección de datos personales
+- Archivos de video procesados solo localmente
+- Sin llamadas de red durante el análisis
+- Los archivos de salida contienen solo datos de tracking
 
-## Known Security Considerations
+## Consideraciones de Seguridad Conocidas
 
-### Input Validation
+### Validación de Entrada
 
-All video inputs are validated for:
-- File format compatibility
-- Maximum file size (configurable)
-- Codec safety checks
+Todas las entradas de video son validadas para:
+- Compatibilidad de formato de archivo
+- Tamaño máximo de archivo (configurable)
+- Verificaciones de seguridad de códec
 
-### Output Sanitization
+### Sanitización de Salida
 
-- File paths are sanitized
-- No arbitrary code execution in outputs
-- JSON/CSV exports are properly escaped
+- Las rutas de archivos son sanitizadas
+- Sin ejecución de código arbitrario en las salidas
+- Las exportaciones JSON/CSV son correctamente escapadas
 
-## Dependencies
+## Dependencias
 
-We regularly monitor and update dependencies:
+Monitoreamos y actualizamos dependencias regularmente:
 
 ```bash
-# Check for known vulnerabilities
+# Verificar vulnerabilidades conocidas
 pip-audit
 
-# Update dependencies
+# Actualizar dependencias
 pip install --upgrade -r requirements.txt
 ```
 
-### Key Dependencies
+### Dependencias Clave
 
-| Package | Security Notes |
-|---------|----------------|
-| OpenCV | Official releases only |
-| NumPy | No known vulnerabilities |
-| Pandas | No known vulnerabilities |
-| h5py | Safe for local files only |
+| Paquete | Notas de Seguridad |
+|---------|-------------------|
+| OpenCV | Solo releases oficiales |
+| NumPy | Sin vulnerabilidades conocidas |
+| Pandas | Sin vulnerabilidades conocidas |
+| h5py | Seguro solo para archivos locales |
 
-## Best Practices for Users
+## Mejores Prácticas para Usuarios
 
-1. **Keep Updated**: Always use the latest version
-2. **Verify Downloads**: Check SHA256 checksums
-3. **Docker**: Use official images only
-4. **Input Files**: Only process trusted video files
-5. **Output Directory**: Use dedicated output directories
+1. **Mantente Actualizado**: Siempre usa la última versión
+2. **Verifica Descargas**: Comprueba checksums SHA256
+3. **Docker**: Usa solo imágenes oficiales
+4. **Archivos de Entrada**: Solo procesa archivos de video confiables
+5. **Directorio de Salida**: Usa directorios de salida dedicados
 
-## Security Badges
+## Badges de Seguridad
 
-- Pre-commit: Bandit security linter
-- CI/CD: Automated security scanning
-- Dependencies: Regular audits
+- Pre-commit: Linter de seguridad Bandit
+- CI/CD: Escaneo de seguridad automatizado
+- Dependencias: Auditorías regulares
 
 ---
 
-Thank you for helping keep Mouse Locomotor Tracker secure!
+¡Gracias por ayudar a mantener Mouse Locomotor Tracker seguro!

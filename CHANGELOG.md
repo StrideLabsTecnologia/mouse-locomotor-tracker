@@ -1,121 +1,122 @@
-# Changelog
+# Registro de Cambios
 
-All notable changes to Mouse Locomotor Tracker will be documented in this file.
+Todos los cambios notables en Mouse Locomotor Tracker serán documentados en este archivo.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/),
+y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
-## [Unreleased]
+## [Sin Publicar]
 
 ---
 
 ## [1.1.0] - 2025-01-14
 
-### Added
-- **Video Auto-Extraction**: Dashboard ahora extrae frames automáticamente al iniciar
+### Agregado
+- **Extracción Automática de Video**: El dashboard ahora extrae frames automáticamente al iniciar
 - **assets/video.mp4**: Video de demostración incluido en el proyecto (3.2 MB)
 - Función `extract_video_frames()` con cache de Streamlit para evitar re-extracción
 - Mensajes de estado si falta OpenCV o el video
 
-### Changed
+### Cambiado
 - Dashboard usa rutas dinámicas (`VIDEO_PATH`, `VIDEO_FRAMES_DIR`) en lugar de hardcoded
 - Mejor manejo de errores cuando el video no está disponible
 
-### Fixed
+### Corregido
 - Video no se mostraba porque los frames no existían
 
 ---
 
 ## [1.0.0] - 2025-01-12
 
-### Added
-- **Core Analysis Engine**
-  - Velocity calculation with configurable smoothing
-  - Stride detection using peak finding algorithms
-  - Gait pattern classification (walk, trot, gallop)
-  - Biomechanical metrics (cadence, stride length, symmetry)
+### Agregado
+- **Motor de Análisis Principal**
+  - Cálculo de velocidad con suavizado configurable
+  - Detección de zancadas usando algoritmos de búsqueda de picos
+  - Clasificación de patrones de marcha (caminar, trote, galope)
+  - Métricas biomecánicas (cadencia, longitud de zancada, simetría)
 
-- **Tracking System**
-  - Motion-based tracking using frame differencing
-  - ROI-constrained detection for treadmill experiments
-  - Multi-tracker architecture (motion, anatomical, DLC)
-  - DeepLabCut integration for pose estimation
+- **Sistema de Tracking**
+  - Tracking basado en movimiento usando diferencia de frames
+  - Detección con ROI restringido para experimentos en cinta
+  - Arquitectura multi-tracker (movimiento, anatómico, DLC)
+  - Integración con DeepLabCut para estimación de pose
 
-- **Visualization Suite**
-  - Real-time tracking overlay on video
-  - Trajectory heatmaps with density estimation
-  - Velocity/acceleration time series plots
-  - Gait phase diagrams
-  - Publication-ready figure export
+- **Suite de Visualización**
+  - Overlay de tracking en tiempo real sobre video
+  - Mapas de calor de trayectoria con estimación de densidad
+  - Gráficos de series temporales de velocidad/aceleración
+  - Diagramas de fase de marcha
+  - Exportación de figuras para publicación
 
-- **Export Formats**
-  - CSV export with configurable columns
-  - JSON export with full metadata
-  - HDF5 export with compression (scientific format)
-  - NWB export (Neurodata Without Borders standard)
-  - Automatic format detection by file extension
+- **Formatos de Exportación**
+  - Exportación CSV con columnas configurables
+  - Exportación JSON con metadatos completos
+  - Exportación HDF5 con compresión (formato científico)
+  - Exportación NWB (estándar Neurodata Without Borders)
+  - Detección automática de formato por extensión de archivo
 
-- **Professional CLI**
-  - Typer-based command interface
-  - Rich terminal output with progress bars
-  - Multiple output format flags
-  - Preview mode for quick checks
+- **CLI Profesional**
+  - Interfaz de comandos basada en Typer
+  - Salida de terminal enriquecida con barras de progreso
+  - Múltiples flags de formato de salida
+  - Modo preview para verificaciones rápidas
 
-- **Docker Support**
-  - Multi-stage Dockerfile for optimized images
-  - Docker Compose for development/testing/production
-  - Jupyter notebook service for exploration
+- **Soporte Docker**
+  - Dockerfile multi-etapa para imágenes optimizadas
+  - Docker Compose para desarrollo/testing/producción
+  - Servicio de Jupyter notebook para exploración
 
-- **Quality Assurance**
+- **Aseguramiento de Calidad**
   - Pre-commit hooks (black, isort, ruff, mypy, bandit)
-  - GitHub Actions CI/CD pipeline
-  - Multi-Python version testing (3.9-3.12)
-  - Code coverage with Codecov integration
+  - Pipeline CI/CD con GitHub Actions
+  - Testing multi-versión de Python (3.9-3.12)
+  - Cobertura de código con integración Codecov
 
-- **Documentation**
-  - Comprehensive README with badges
-  - API documentation with examples
-  - Contributing guidelines
-  - MIT License
+- **Documentación**
+  - README completo con badges
+  - Documentación de API con ejemplos
+  - Guías de contribución
+  - Licencia MIT
 
-### Technical Details
-- Python 3.9+ compatibility
-- OpenCV-based video processing
-- NumPy/SciPy for numerical computations
-- Pandas for data manipulation
-- Type hints throughout codebase
+### Detalles Técnicos
+- Compatibilidad con Python 3.9+
+- Procesamiento de video basado en OpenCV
+- NumPy/SciPy para cálculos numéricos
+- Pandas para manipulación de datos
+- Type hints en todo el código
 
 ---
 
 ## [0.2.0] - 2025-01-11
 
-### Added
-- Motion-only tracking processor
-- ROI constraints for treadmill area
-- Frame differencing algorithm
-- Basic velocity calculations
+### Agregado
+- Procesador de tracking solo por movimiento
+- Restricciones de ROI para área de cinta
+- Algoritmo de diferencia de frames
+- Cálculos básicos de velocidad
 
-### Fixed
-- False positive detection of static objects (screws)
-- Tracking accuracy improved from 70% to 100%
+### Corregido
+- Detección de falsos positivos en objetos estáticos (tornillos)
+- Precisión de tracking mejorada de 70% a 100%
 
 ---
 
 ## [0.1.0] - 2025-01-10
 
-### Added
-- Initial project structure
-- Basic video loading and processing
-- Simple centroid tracking
-- CSV export functionality
+### Agregado
+- Estructura inicial del proyecto
+- Carga y procesamiento básico de video
+- Tracking simple de centroide
+- Funcionalidad de exportación CSV
 
-### Known Issues
-- Static object detection causing false positives
-- No ROI constraints
+### Problemas Conocidos
+- Detección de objetos estáticos causando falsos positivos
+- Sin restricciones de ROI
 
 ---
 
-[Unreleased]: https://github.com/stridelabs/mouse-locomotor-tracker/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/stridelabs/mouse-locomotor-tracker/compare/v0.2.0...v1.0.0
-[0.2.0]: https://github.com/stridelabs/mouse-locomotor-tracker/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/stridelabs/mouse-locomotor-tracker/releases/tag/v0.1.0
+[Sin Publicar]: https://github.com/StrideLabsTecnologia/mouse-locomotor-tracker/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/StrideLabsTecnologia/mouse-locomotor-tracker/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/StrideLabsTecnologia/mouse-locomotor-tracker/compare/v0.2.0...v1.0.0
+[0.2.0]: https://github.com/StrideLabsTecnologia/mouse-locomotor-tracker/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/StrideLabsTecnologia/mouse-locomotor-tracker/releases/tag/v0.1.0

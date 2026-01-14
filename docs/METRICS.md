@@ -1,23 +1,23 @@
-# Metrics Guide
+# Guía de Métricas
 
-Detailed explanation of all metrics computed by Mouse Locomotor Tracker, including mathematical formulas and biological interpretation.
+Explicación detallada de todas las métricas calculadas por Mouse Locomotor Tracker, incluyendo fórmulas matemáticas e interpretación biológica.
 
-## Table of Contents
+## Tabla de Contenidos
 
-1. [Velocity Metrics](#velocity-metrics)
-2. [Coordination Metrics](#coordination-metrics)
-3. [Gait Cycle Metrics](#gait-cycle-metrics)
-4. [Biological Interpretation](#biological-interpretation)
+1. [Métricas de Velocidad](#métricas-de-velocidad)
+2. [Métricas de Coordinación](#métricas-de-coordinación)
+3. [Métricas de Ciclo de Marcha](#métricas-de-ciclo-de-marcha)
+4. [Interpretación Biológica](#interpretación-biológica)
 
 ---
 
-## Velocity Metrics
+## Métricas de Velocidad
 
-### Instantaneous Speed
+### Velocidad Instantánea
 
-**Definition:** The rate of position change between consecutive frames.
+**Definición:** La tasa de cambio de posición entre cuadros consecutivos.
 
-**Formula:**
+**Fórmula:**
 
 ```
                     sqrt((x[i+1] - x[i])^2 + (y[i+1] - y[i])^2) * pixel_to_mm
@@ -25,15 +25,15 @@ speed[i] (cm/s) = ------------------------------------------------------------ *
                                             1
 ```
 
-Where:
-- `x[i], y[i]` = Position coordinates at frame `i` (pixels)
-- `pixel_to_mm` = Physical size per pixel (mm)
-- `fps` = Frames per second
-- Division by 10 converts mm/s to cm/s
+Donde:
+- `x[i], y[i]` = Coordenadas de posición en el cuadro `i` (píxeles)
+- `pixel_to_mm` = Tamaño físico por píxel (mm)
+- `fps` = Cuadros por segundo
+- División por 10 convierte mm/s a cm/s
 
-**Smoothing:**
+**Suavizado:**
 
-The raw speed is smoothed using a moving average filter:
+La velocidad cruda se suaviza usando un filtro de media móvil:
 
 ```
                     sum(speed[i-w:i+w])
@@ -41,24 +41,24 @@ smoothed_speed = -------------------------
                        2*w + 1
 ```
 
-Where `w` is the half-window size (default: 5 frames for window=10).
+Donde `w` es el tamaño de media ventana (por defecto: 5 cuadros para ventana=10).
 
-**Typical Values:**
+**Valores Típicos:**
 
-| Condition | Speed Range | Notes |
-|-----------|-------------|-------|
-| Stationary | 0-2 cm/s | Grooming, resting |
-| Walking | 5-15 cm/s | Normal locomotion |
-| Fast walking | 15-30 cm/s | Motivated movement |
-| Running | 30-60 cm/s | Escape behavior |
+| Condición | Rango de Velocidad | Notas |
+|-----------|-------------------|-------|
+| Estacionario | 0-2 cm/s | Acicalamiento, descanso |
+| Caminando | 5-15 cm/s | Locomoción normal |
+| Caminata rápida | 15-30 cm/s | Movimiento motivado |
+| Corriendo | 30-60 cm/s | Comportamiento de escape |
 
 ---
 
-### Average Speed
+### Velocidad Promedio
 
-**Definition:** Mean instantaneous speed over the recording period.
+**Definición:** Media de la velocidad instantánea durante el período de grabación.
 
-**Formula:**
+**Fórmula:**
 
 ```
                     1   n
@@ -66,87 +66,87 @@ mean_speed = --- * SUM speed[i]
                     n  i=1
 ```
 
-**Use Cases:**
-- Compare overall activity levels between groups
-- Assess effects of interventions on locomotion
-- Baseline measurement for normalization
+**Casos de Uso:**
+- Comparar niveles de actividad general entre grupos
+- Evaluar efectos de intervenciones en la locomoción
+- Medición base para normalización
 
 ---
 
-### Acceleration
+### Aceleración
 
-**Definition:** Rate of change of speed over time.
+**Definición:** Tasa de cambio de velocidad en el tiempo.
 
-**Formula:**
+**Fórmula:**
 
 ```
 acceleration[i] (cm/s^2) = (speed[i+1] - speed[i]) * fps
 ```
 
-**Interpretation:**
-- Positive acceleration = speeding up (recovery)
-- Negative acceleration = slowing down (drag)
+**Interpretación:**
+- Aceleración positiva = acelerando (recuperación)
+- Aceleración negativa = desacelerando (arrastre)
 
 ---
 
-### Drag and Recovery Events
+### Eventos de Arrastre y Recuperación
 
-**Definitions:**
-- **Drag Event:** Sustained period of negative acceleration (slowing)
-- **Recovery Event:** Sustained period of positive acceleration (speeding up)
+**Definiciones:**
+- **Evento de Arrastre:** Período sostenido de aceleración negativa (desacelerando)
+- **Evento de Recuperación:** Período sostenido de aceleración positiva (acelerando)
 
-**Detection Algorithm:**
+**Algoritmo de Detección:**
 
 ```
-1. Compute smoothed acceleration
-2. Identify contiguous segments where:
-   - Drag: acceleration < 0 for duration >= threshold
-   - Recovery: acceleration > 0 for duration >= threshold
-3. Filter by minimum duration (default: 0.25 seconds)
+1. Calcular aceleración suavizada
+2. Identificar segmentos contiguos donde:
+   - Arrastre: aceleración < 0 por duración >= umbral
+   - Recuperación: aceleración > 0 por duración >= umbral
+3. Filtrar por duración mínima (por defecto: 0.25 segundos)
 ```
 
-**Metrics:**
+**Métricas:**
 
-| Metric | Formula | Unit |
-|--------|---------|------|
-| Drag Count | Number of drag events | count |
-| Recovery Count | Number of recovery events | count |
-| Drag Duration | Sum of all drag event durations | seconds |
-| Recovery Duration | Sum of all recovery event durations | seconds |
-| Drag/Recovery Ratio | Drag Duration / Recovery Duration | ratio |
+| Métrica | Fórmula | Unidad |
+|---------|---------|--------|
+| Conteo de Arrastre | Número de eventos de arrastre | conteo |
+| Conteo de Recuperación | Número de eventos de recuperación | conteo |
+| Duración de Arrastre | Suma de duraciones de eventos de arrastre | segundos |
+| Duración de Recuperación | Suma de duraciones de eventos de recuperación | segundos |
+| Ratio Arrastre/Recuperación | Duración Arrastre / Duración Recuperación | ratio |
 
-**Clinical Relevance:**
-- Increased drag events may indicate motor impairment
-- Drag/recovery ratio can reflect motor fatigue
-- Useful for assessing spinal cord injury recovery
+**Relevancia Clínica:**
+- Eventos de arrastre aumentados pueden indicar deterioro motor
+- El ratio arrastre/recuperación puede reflejar fatiga motora
+- Útil para evaluar recuperación de lesión medular
 
 ---
 
-## Coordination Metrics
+## Métricas de Coordinación
 
-### Circular Statistics Background
+### Contexto de Estadística Circular
 
-Limb coordination is measured using **circular statistics** because phase relationships are cyclic (0 = 360 degrees).
+La coordinación de extremidades se mide usando **estadística circular** porque las relaciones de fase son cíclicas (0 = 360 grados).
 
 ```
-Phase Space Representation:
+Representación en Espacio de Fase:
 
-           90 deg
+           90 grados
               |
               |
-    180 deg --+-- 0 deg
+    180 grados --+-- 0 grados
               |
               |
-           270 deg
+           270 grados
 ```
 
 ---
 
-### Resultant Vector Length (R)
+### Longitud del Vector Resultante (R)
 
-**Definition:** Measure of concentration of phase angles. Indicates coordination strength.
+**Definición:** Medida de concentración de ángulos de fase. Indica fuerza de coordinación.
 
-**Formula:**
+**Fórmula:**
 
 ```
 X = mean(cos(phi))
@@ -154,15 +154,15 @@ Y = mean(sin(phi))
 R = sqrt(X^2 + Y^2)
 ```
 
-Where `phi` is the array of phase angles in radians.
+Donde `phi` es el array de ángulos de fase en radianes.
 
-**Geometric Interpretation:**
+**Interpretación Geométrica:**
 
 ```
-Each phase angle is a unit vector on the unit circle.
-R is the length of the mean vector.
+Cada ángulo de fase es un vector unitario en el círculo unitario.
+R es la longitud del vector medio.
 
-High R (vectors aligned):      Low R (vectors scattered):
+R alto (vectores alineados):      R bajo (vectores dispersos):
 
     \   |   /                       \  /
      \  |  /                     ----+----
@@ -172,390 +172,390 @@ High R (vectors aligned):      Low R (vectors scattered):
         |
 ```
 
-**Range:** [0, 1]
-- R = 1: All phases identical (perfect coordination)
-- R = 0: Phases uniformly distributed (no coordination)
+**Rango:** [0, 1]
+- R = 1: Todas las fases idénticas (coordinación perfecta)
+- R = 0: Fases uniformemente distribuidas (sin coordinación)
 
-**Interpretation Table:**
+**Tabla de Interpretación:**
 
-| R Value | Coordination Level | Description |
-|---------|-------------------|-------------|
-| 0.9 - 1.0 | Excellent | Highly consistent phase relationship |
-| 0.7 - 0.9 | Good | Consistent coordination |
-| 0.5 - 0.7 | Moderate | Some variability |
-| 0.3 - 0.5 | Weak | High phase variability |
-| 0.0 - 0.3 | None | Random/independent movement |
+| Valor R | Nivel de Coordinación | Descripción |
+|---------|----------------------|-------------|
+| 0.9 - 1.0 | Excelente | Relación de fase altamente consistente |
+| 0.7 - 0.9 | Buena | Coordinación consistente |
+| 0.5 - 0.7 | Moderada | Cierta variabilidad |
+| 0.3 - 0.5 | Débil | Alta variabilidad de fase |
+| 0.0 - 0.3 | Ninguna | Movimiento aleatorio/independiente |
 
 ---
 
-### Mean Phase Angle
+### Ángulo de Fase Medio
 
-**Definition:** Average direction of phase relationship between limb pair.
+**Definición:** Dirección promedio de la relación de fase entre par de extremidades.
 
-**Formula:**
+**Fórmula:**
 
 ```
 mean_phi = atan2(Y, X)
 ```
 
-Where X and Y are computed as above.
+Donde X e Y se calculan como arriba.
 
-**Result Range:** [-180, 180] degrees (or [-pi, pi] radians)
+**Rango del Resultado:** [-180, 180] grados (o [-pi, pi] radianes)
 
-**Phase Angle Interpretation:**
+**Interpretación del Ángulo de Fase:**
 
-| Phase | Degrees | Pattern | Description |
-|-------|---------|---------|-------------|
-| In-phase | -30 to 30 | Synchronized | Limbs move together |
-| Anti-phase | 150 to 210 | Alternating | Limbs alternate |
-| Quarter lag | 60 to 120 | Leading | One limb leads by 1/4 cycle |
-| Three-quarter | 240 to 300 | Lagging | One limb lags by 1/4 cycle |
+| Fase | Grados | Patrón | Descripción |
+|------|--------|--------|-------------|
+| En fase | -30 a 30 | Sincronizado | Las extremidades se mueven juntas |
+| Anti-fase | 150 a 210 | Alternando | Las extremidades alternan |
+| Cuarto de retraso | 60 a 120 | Adelantado | Una extremidad adelanta 1/4 de ciclo |
+| Tres cuartos | 240 a 300 | Retrasado | Una extremidad retrasa 1/4 de ciclo |
 
 ---
 
-### Phase Estimation Per Cycle
+### Estimación de Fase Por Ciclo
 
-**Definition:** Phase relationship estimated for each gait cycle using an integral-based method.
+**Definición:** Relación de fase estimada para cada ciclo de marcha usando un método basado en integral.
 
-**Formula:**
+**Fórmula:**
 
-For each cycle bounded by peaks at indices `[i, j]`:
+Para cada ciclo delimitado por picos en índices `[i, j]`:
 
 ```
-1. Normalize relative stride to [-1, 1]:
+1. Normalizar zancada relativa a [-1, 1]:
    y_norm = 2 * (rel_stride - min) / (max - min) - 1
 
-2. Create phase axis:
+2. Crear eje de fase:
    x = linspace(0, 2*pi, j-i)
 
-3. Compute phase from integral:
+3. Calcular fase desde integral:
    phi = (4 - integral(y_norm, x)) * pi / 4
 ```
 
-**Rationale:**
-- The integral of a normalized sinusoid over one period indicates phase offset
-- Values around 4 indicate in-phase; values around 0 indicate anti-phase
+**Justificación:**
+- La integral de una sinusoide normalizada sobre un período indica el desfase
+- Valores alrededor de 4 indican en fase; valores alrededor de 0 indican anti-fase
 
 ---
 
-### Limb Pair Definitions
+### Definiciones de Pares de Extremidades
 
-Standard limb pairs for quadrupedal locomotion:
+Pares estándar de extremidades para locomoción cuadrúpeda:
 
 ```
-       FRONT
+       FRENTE
     foreL    foreR
        |        |
        |        |
     hindL    hindR
-       BACK
+       ATRÁS
 
-Pair Abbreviations:
-- LH = Left Hind (hindL)
-- RH = Right Hind (hindR)
-- LF = Left Fore (foreL)
-- RF = Right Fore (foreR)
+Abreviaciones de Pares:
+- LH = Trasera Izquierda (hindL)
+- RH = Trasera Derecha (hindR)
+- LF = Delantera Izquierda (foreL)
+- RF = Delantera Derecha (foreR)
 ```
 
-**Standard Pairs:**
+**Pares Estándar:**
 
-| Pair Name | Limbs | Typical Phase | Gait Type |
-|-----------|-------|---------------|-----------|
-| LH_RH | Left-Right Hind | ~180 deg | All gaits |
-| LF_RF | Left-Right Fore | ~180 deg | All gaits |
-| LH_LF | Left Hind-Fore | ~0 or ~180 | Pace or Trot |
-| RH_RF | Right Hind-Fore | ~0 or ~180 | Pace or Trot |
-| LF_RH | Diagonal | ~0 deg | Trot |
-| RF_LH | Diagonal | ~0 deg | Trot |
+| Nombre del Par | Extremidades | Fase Típica | Tipo de Marcha |
+|----------------|--------------|-------------|----------------|
+| LH_RH | Traseras Izq-Der | ~180 grados | Todas las marchas |
+| LF_RF | Delanteras Izq-Der | ~180 grados | Todas las marchas |
+| LH_LF | Trasera-Delantera Izq | ~0 o ~180 | Paso o Trote |
+| RH_RF | Trasera-Delantera Der | ~0 o ~180 | Paso o Trote |
+| LF_RH | Diagonal | ~0 grados | Trote |
+| RF_LH | Diagonal | ~0 grados | Trote |
 
 ---
 
-### Gait Pattern Classification
+### Clasificación de Patrones de Marcha
 
-Different coordination patterns indicate different gait types:
+Diferentes patrones de coordinación indican diferentes tipos de marcha:
 
 ```
-TROT (most common in mice):
+TROTE (más común en ratones):
 +---------------------------+
-| Diagonal pairs in sync    |
-| Ipsilateral alternating   |
+| Pares diagonales en sync  |
+| Ipsilaterales alternando  |
 +---------------------------+
-  LF_RH: R > 0.8, phase ~ 0
-  RF_LH: R > 0.8, phase ~ 0
-  LH_RH: R > 0.8, phase ~ 180
-  LF_RF: R > 0.8, phase ~ 180
+  LF_RH: R > 0.8, fase ~ 0
+  RF_LH: R > 0.8, fase ~ 0
+  LH_RH: R > 0.8, fase ~ 180
+  LF_RF: R > 0.8, fase ~ 180
 
 
-PACE (less common):
+PASO (menos común):
 +---------------------------+
-| Ipsilateral pairs in sync |
-| Contralateral alternating |
+| Pares ipsilaterales sync  |
+| Contralaterales alternando|
 +---------------------------+
-  LH_LF: R > 0.8, phase ~ 0
-  RH_RF: R > 0.8, phase ~ 0
-  LH_RH: R > 0.8, phase ~ 180
+  LH_LF: R > 0.8, fase ~ 0
+  RH_RF: R > 0.8, fase ~ 0
+  LH_RH: R > 0.8, fase ~ 180
 
 
-BOUND/GALLOP:
+SALTO/GALOPE:
 +---------------------------+
-| Front pair synchronized   |
-| Hind pair synchronized    |
-| Front-hind alternating    |
+| Par delantero sincronizado|
+| Par trasero sincronizado  |
+| Delante-atrás alternando  |
 +---------------------------+
-  LH_RH: R > 0.8, phase ~ 0
-  LF_RF: R > 0.8, phase ~ 0
-  LH_LF: R > 0.8, phase ~ 180
+  LH_RH: R > 0.8, fase ~ 0
+  LF_RF: R > 0.8, fase ~ 0
+  LH_LF: R > 0.8, fase ~ 180
 ```
 
 ---
 
-## Gait Cycle Metrics
+## Métricas de Ciclo de Marcha
 
-### Cycle Detection
+### Detección de Ciclos
 
-**Method:** Peak detection on stride position data.
+**Método:** Detección de picos en datos de posición de zancada.
 
-**Algorithm:**
-
-```
-1. Apply smoothing to stride data
-2. Find all local maxima (peaks)
-3. Compute mean inter-peak interval
-4. Re-detect peaks with minimum distance constraint (half mean interval)
-5. Optionally detect troughs (minima) for stance/swing phases
-```
-
-**Gait Cycle Definition:**
+**Algoritmo:**
 
 ```
-                  STRIDE POSITION
+1. Aplicar suavizado a datos de zancada
+2. Encontrar todos los máximos locales (picos)
+3. Calcular intervalo medio entre picos
+4. Re-detectar picos con restricción de distancia mínima (mitad del intervalo medio)
+5. Opcionalmente detectar valles (mínimos) para fases de apoyo/balanceo
+```
+
+**Definición de Ciclo de Marcha:**
+
+```
+                  POSICIÓN DE ZANCADA
                         ^
                         |
-    Peak (max extension)|      Peak
+    Pico (max extensión)|      Pico
               \         |     /
-               \  Swing |    /
+               \  Balanceo    /
                 \       |   /
                  \______|__/
                    |    |
-                Stance phase
+                Fase de apoyo
                    |    |
-             Trough (max flexion)
+             Valle (max flexión)
 
-    |<---- One Gait Cycle ---->|
+    |<---- Un Ciclo de Marcha ---->|
 ```
 
 ---
 
-### Cadence
+### Cadencia
 
-**Definition:** Number of steps (cycles) per unit time. Also called step frequency.
+**Definición:** Número de pasos (ciclos) por unidad de tiempo. También llamada frecuencia de paso.
 
-**Formula:**
-
-```
-cadence (Hz) = number_of_cycles / duration (seconds)
-```
-
-**Typical Values for Mice:**
-
-| Speed Category | Cadence | Notes |
-|----------------|---------|-------|
-| Slow walk | 2-3 Hz | Exploratory |
-| Normal walk | 3-5 Hz | Typical |
-| Fast walk | 5-7 Hz | Motivated |
-| Run | 7-10 Hz | Escape |
-
-**Relationship to Speed:**
+**Fórmula:**
 
 ```
-speed = cadence * stride_length
+cadencia (Hz) = número_de_ciclos / duración (segundos)
+```
 
-For constant stride length:
-  Higher cadence = Higher speed
+**Valores Típicos para Ratones:**
 
-For constant cadence:
-  Longer stride = Higher speed
+| Categoría de Velocidad | Cadencia | Notas |
+|------------------------|----------|-------|
+| Caminata lenta | 2-3 Hz | Exploratorio |
+| Caminata normal | 3-5 Hz | Típica |
+| Caminata rápida | 5-7 Hz | Motivada |
+| Carrera | 7-10 Hz | Escape |
+
+**Relación con la Velocidad:**
+
+```
+velocidad = cadencia * longitud_zancada
+
+Para longitud de zancada constante:
+  Mayor cadencia = Mayor velocidad
+
+Para cadencia constante:
+  Zancada más larga = Mayor velocidad
 ```
 
 ---
 
-### Stride Length
+### Longitud de Zancada
 
-**Definition:** Distance traveled during one complete gait cycle.
+**Definición:** Distancia recorrida durante un ciclo de marcha completo.
 
-**Formula:**
+**Fórmula:**
 
 ```
-stride_length (cm) = average_speed (cm/s) / cadence (Hz)
+longitud_zancada (cm) = velocidad_promedio (cm/s) / cadencia (Hz)
 ```
 
-**Components:**
-- **Step Length:** Distance between same point on opposite limbs
-- **Stride Length:** Distance between same point on same limb (2x step for alternating)
+**Componentes:**
+- **Longitud de Paso:** Distancia entre mismo punto en extremidades opuestas
+- **Longitud de Zancada:** Distancia entre mismo punto en misma extremidad (2x paso para alternancia)
 
-**Typical Values:**
+**Valores Típicos:**
 
-| Size/Age | Stride Length | Notes |
-|----------|---------------|-------|
-| Young mouse | 3-5 cm | Higher relative to body |
-| Adult mouse | 4-6 cm | Normal range |
-| Aged mouse | 3-4 cm | May decrease |
+| Tamaño/Edad | Longitud de Zancada | Notas |
+|-------------|---------------------|-------|
+| Ratón joven | 3-5 cm | Mayor relativo al cuerpo |
+| Ratón adulto | 4-6 cm | Rango normal |
+| Ratón envejecido | 3-4 cm | Puede disminuir |
 
 ---
 
-### Gait Regularity Metrics
+### Métricas de Regularidad de Marcha
 
-**Cycle Duration:**
+**Duración de Ciclo:**
 
 ```
-cycle_duration[i] = (peak[i+1] - peak[i]) / fps  (seconds)
+cycle_duration[i] = (peak[i+1] - peak[i]) / fps  (segundos)
 ```
 
-**Coefficient of Variation (CV):**
+**Coeficiente de Variación (CV):**
 
 ```
 CV = std(cycle_duration) / mean(cycle_duration)
 ```
 
-**Interpretation:**
-- CV < 0.1: Very regular gait
-- CV 0.1-0.2: Normal variation
-- CV > 0.2: Irregular gait (may indicate pathology)
+**Interpretación:**
+- CV < 0.1: Marcha muy regular
+- CV 0.1-0.2: Variación normal
+- CV > 0.2: Marcha irregular (puede indicar patología)
 
-**Stride Amplitude:**
+**Amplitud de Zancada:**
 
 ```
 amplitude[i] = |stride[peak[i]] - stride[trough[i]]|
 ```
 
-Measures the range of limb movement during each cycle.
+Mide el rango de movimiento de la extremidad durante cada ciclo.
 
 ---
 
-### Gait Events
+### Eventos de Marcha
 
-**Stance Start (Touchdown):**
-- Moment when paw contacts ground
-- Detected at zero-crossing (stride going backward)
+**Inicio de Apoyo (Aterrizaje):**
+- Momento cuando la pata contacta el suelo
+- Detectado en cruce por cero (zancada yendo hacia atrás)
 
-**Swing Start (Liftoff):**
-- Moment when paw leaves ground
-- Detected at zero-crossing (stride going forward)
+**Inicio de Balanceo (Despegue):**
+- Momento cuando la pata deja el suelo
+- Detectado en cruce por cero (zancada yendo hacia adelante)
 
-**Duty Factor:**
+**Factor de Trabajo:**
 
 ```
-duty_factor = stance_duration / cycle_duration
+duty_factor = duración_apoyo / duración_ciclo
 ```
 
-- < 0.5: Running gait (aerial phase)
-- = 0.5: Transition
-- > 0.5: Walking gait (overlap phase)
+- < 0.5: Marcha de carrera (fase aérea)
+- = 0.5: Transición
+- > 0.5: Marcha de caminata (fase de superposición)
 
 ---
 
-## Biological Interpretation
+## Interpretación Biológica
 
-### Normal vs. Pathological Patterns
+### Patrones Normales vs. Patológicos
 
-**Healthy Mouse Locomotion:**
+**Locomoción Saludable de Ratón:**
 
-| Metric | Normal Range | Notes |
-|--------|--------------|-------|
-| Mean Speed | 10-25 cm/s | Context dependent |
-| Coordination R | > 0.7 | All pairs |
-| Phase (diagonal) | ~0 deg | Trot pattern |
-| Phase (ipsilateral) | ~180 deg | Alternating |
-| Cadence | 3-6 Hz | Speed dependent |
-| CV (regularity) | < 0.15 | Stable gait |
+| Métrica | Rango Normal | Notas |
+|---------|--------------|-------|
+| Velocidad Media | 10-25 cm/s | Dependiente del contexto |
+| Coordinación R | > 0.7 | Todos los pares |
+| Fase (diagonal) | ~0 grados | Patrón de trote |
+| Fase (ipsilateral) | ~180 grados | Alternando |
+| Cadencia | 3-6 Hz | Dependiente de velocidad |
+| CV (regularidad) | < 0.15 | Marcha estable |
 
-**Indicators of Impairment:**
+**Indicadores de Deterioro:**
 
-| Finding | Possible Interpretation |
-|---------|------------------------|
-| Low R (< 0.5) | Loss of coordination |
-| Irregular phase | Ataxia |
-| High CV | Unstable gait |
-| Reduced speed | Weakness, pain |
-| Increased drag events | Fatigue, weakness |
-| Asymmetric cadence | Lateralized impairment |
-
----
-
-### Clinical Applications
-
-**Spinal Cord Injury Assessment:**
-
-```
-Pre-injury:     Post-injury (mild):    Post-injury (severe):
-R = 0.92        R = 0.65               R = 0.30
-CV = 0.08       CV = 0.18              CV = 0.35
-Phase: stable   Phase: variable        Phase: random
-```
-
-**Drug Effect Evaluation:**
-
-Monitor changes in:
-- Speed (sedation/stimulation)
-- Coordination (motor effects)
-- Cadence (dopaminergic effects)
-- Regularity (cerebellar effects)
-
-**Age-Related Changes:**
-
-| Metric | Young | Aged |
-|--------|-------|------|
-| Speed | Higher | Lower |
-| Stride Length | Longer | Shorter |
-| Coordination R | Higher | May decrease |
-| Regularity CV | Lower | May increase |
+| Hallazgo | Posible Interpretación |
+|----------|------------------------|
+| R bajo (< 0.5) | Pérdida de coordinación |
+| Fase irregular | Ataxia |
+| CV alto | Marcha inestable |
+| Velocidad reducida | Debilidad, dolor |
+| Eventos de arrastre aumentados | Fatiga, debilidad |
+| Cadencia asimétrica | Deterioro lateralizado |
 
 ---
 
-### Statistical Considerations
+### Aplicaciones Clínicas
 
-**Sample Size:**
-- Minimum 10-15 strides per limb pair for reliable R
-- 30+ seconds of locomotion recommended
-
-**Effect Size for R:**
+**Evaluación de Lesión Medular:**
 
 ```
-Small effect:   delta_R = 0.1
-Medium effect:  delta_R = 0.2
-Large effect:   delta_R = 0.3
+Pre-lesión:      Post-lesión (leve):    Post-lesión (severa):
+R = 0.92         R = 0.65               R = 0.30
+CV = 0.08        CV = 0.18              CV = 0.35
+Fase: estable    Fase: variable         Fase: aleatoria
 ```
 
-**Rayleigh Test for Significance:**
+**Evaluación de Efectos de Fármacos:**
 
-Test whether R is significantly different from 0:
+Monitorear cambios en:
+- Velocidad (sedación/estimulación)
+- Coordinación (efectos motores)
+- Cadencia (efectos dopaminérgicos)
+- Regularidad (efectos cerebelosos)
+
+**Cambios Relacionados con la Edad:**
+
+| Métrica | Joven | Envejecido |
+|---------|-------|------------|
+| Velocidad | Mayor | Menor |
+| Longitud de Zancada | Más larga | Más corta |
+| Coordinación R | Mayor | Puede disminuir |
+| Regularidad CV | Menor | Puede aumentar |
+
+---
+
+### Consideraciones Estadísticas
+
+**Tamaño de Muestra:**
+- Mínimo 10-15 zancadas por par de extremidades para R confiable
+- Se recomiendan 30+ segundos de locomoción
+
+**Tamaño de Efecto para R:**
+
+```
+Efecto pequeño:  delta_R = 0.1
+Efecto mediano:  delta_R = 0.2
+Efecto grande:   delta_R = 0.3
+```
+
+**Test de Rayleigh para Significancia:**
+
+Probar si R es significativamente diferente de 0:
 
 ```
 Z = n * R^2
-p-value from chi-squared distribution with df=2
+p-valor de distribución chi-cuadrado con df=2
 ```
 
-Significant if p < 0.05 indicates non-uniform distribution.
+Significativo si p < 0.05 indica distribución no uniforme.
 
 ---
 
-## Formulas Summary
+## Resumen de Fórmulas
 
-### Velocity
+### Velocidad
 
 ```
 speed[i] = sqrt(dx^2 + dy^2) * scale * fps
 acceleration = diff(speed) * fps
 ```
 
-### Circular Statistics
+### Estadística Circular
 
 ```
 R = sqrt(mean(cos(phi))^2 + mean(sin(phi))^2)
 mean_angle = atan2(mean(sin(phi)), mean(cos(phi)))
 ```
 
-### Gait Metrics
+### Métricas de Marcha
 
 ```
 cadence = n_cycles / duration
@@ -566,7 +566,7 @@ duty_factor = stance_time / cycle_time
 
 ---
 
-## References
+## Referencias
 
 1. Batka, R. J., et al. (2014). "The need for speed in rodent locomotion analyses." The Anatomical Record.
 
@@ -576,4 +576,4 @@ duty_factor = stance_time / cycle_time
 
 4. Mardia, K. V., & Jupp, P. E. (2000). "Directional Statistics." Wiley.
 
-5. Allodi, I., et al. (2021). "Locomotion analysis in mice." Nature Protocols (methodology adapted).
+5. Allodi, I., et al. (2021). "Locomotion analysis in mice." Nature Protocols (metodología adaptada).

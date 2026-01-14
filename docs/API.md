@@ -1,21 +1,21 @@
-# API Reference
+# Referencia de API
 
-Complete API documentation for Mouse Locomotor Tracker.
+Documentación completa de API para Mouse Locomotor Tracker.
 
-## Table of Contents
+## Tabla de Contenidos
 
-1. [Tracking Module](#tracking-module)
-2. [Analysis Module](#analysis-module)
-3. [Visualization Module](#visualization-module)
-4. [Export Module](#export-module)
+1. [Módulo de Tracking](#módulo-de-tracking)
+2. [Módulo de Análisis](#módulo-de-análisis)
+3. [Módulo de Visualización](#módulo-de-visualización)
+4. [Módulo de Exportación](#módulo-de-exportación)
 
 ---
 
-## Tracking Module
+## Módulo de Tracking
 
 ### `tracking.VideoMetadata`
 
-Container for video file metadata.
+Contenedor para metadatos de archivo de video.
 
 ```python
 from mouse_locomotor_tracker.tracking import VideoMetadata
@@ -25,31 +25,31 @@ from mouse_locomotor_tracker.tracking import VideoMetadata
 
 ```python
 VideoMetadata(
-    duration: float,       # Total duration in seconds
-    fps: int,              # Frames per second
-    n_frames: int,         # Total number of frames
-    width: int,            # Image width in pixels
-    height: int,           # Image height in pixels
-    pixel_width_mm: float  # Physical width per pixel (mm)
+    duration: float,       # Duración total en segundos
+    fps: int,              # Cuadros por segundo
+    n_frames: int,         # Número total de cuadros
+    width: int,            # Ancho de imagen en píxeles
+    height: int,           # Alto de imagen en píxeles
+    pixel_width_mm: float  # Ancho físico por píxel (mm)
 )
 ```
 
-#### Attributes
+#### Atributos
 
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| `duration` | `float` | Video duration in seconds |
-| `fps` | `int` | Frames per second |
-| `n_frames` | `int` | Total frame count |
-| `width` | `int` | Frame width in pixels |
-| `height` | `int` | Frame height in pixels |
-| `pixel_width_mm` | `float` | Physical size per pixel (mm) |
+| Atributo | Tipo | Descripción |
+|----------|------|-------------|
+| `duration` | `float` | Duración del video en segundos |
+| `fps` | `int` | Cuadros por segundo |
+| `n_frames` | `int` | Conteo total de cuadros |
+| `width` | `int` | Ancho del cuadro en píxeles |
+| `height` | `int` | Alto del cuadro en píxeles |
+| `pixel_width_mm` | `float` | Tamaño físico por píxel (mm) |
 
-#### Methods
+#### Métodos
 
 ##### `to_dict() -> dict`
 
-Convert metadata to dictionary format.
+Convertir metadatos a formato diccionario.
 
 ```python
 metadata = VideoMetadata(duration=30.0, fps=100, n_frames=3000,
@@ -60,7 +60,7 @@ d = metadata.to_dict()
 
 ##### `from_dict(d: dict) -> VideoMetadata` (classmethod)
 
-Create VideoMetadata from dictionary.
+Crear VideoMetadata desde diccionario.
 
 ```python
 d = {'dur': 30.0, 'fps': 100, 'nFrame': 3000, 'imW': 640, 'imH': 480, 'xPixW': 0.3125}
@@ -71,7 +71,7 @@ metadata = VideoMetadata.from_dict(d)
 
 ### `tracking.MarkerSet`
 
-Configuration for tracking markers.
+Configuración para marcadores de tracking.
 
 ```python
 from mouse_locomotor_tracker.tracking import MarkerSet
@@ -81,27 +81,27 @@ from mouse_locomotor_tracker.tracking import MarkerSet
 
 ```python
 MarkerSet(
-    name: str,                              # Configuration name
-    markers: List[str],                     # List of marker names
-    limb_pairs: Dict[str, Tuple[str, str]], # Limb pair definitions
-    speed_markers: List[str]                # Markers for speed calculation
+    name: str,                              # Nombre de configuración
+    markers: List[str],                     # Lista de nombres de marcadores
+    limb_pairs: Dict[str, Tuple[str, str]], # Definiciones de pares de extremidades
+    speed_markers: List[str]                # Marcadores para cálculo de velocidad
 )
 ```
 
-#### Attributes
+#### Atributos
 
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| `name` | `str` | Configuration identifier |
-| `markers` | `List[str]` | All marker names |
-| `limb_pairs` | `Dict` | Mapping of pair names to limb tuples |
-| `speed_markers` | `List[str]` | Markers used for body speed |
+| Atributo | Tipo | Descripción |
+|----------|------|-------------|
+| `name` | `str` | Identificador de configuración |
+| `markers` | `List[str]` | Todos los nombres de marcadores |
+| `limb_pairs` | `Dict` | Mapeo de nombres de pares a tuplas de extremidades |
+| `speed_markers` | `List[str]` | Marcadores usados para velocidad corporal |
 
-#### Methods
+#### Métodos
 
 ##### `get_all_markers() -> List[str]`
 
-Return list of all marker names.
+Retorna lista de todos los nombres de marcadores.
 
 ```python
 markers = marker_set.get_all_markers()
@@ -110,30 +110,30 @@ markers = marker_set.get_all_markers()
 
 ##### `get_limb_pair(pair_name: str) -> Tuple[str, str]`
 
-Get marker tuple for a limb pair.
+Obtener tupla de marcadores para un par de extremidades.
 
 ```python
 pair = marker_set.get_limb_pair("LH_RH")
 # ('hindL', 'hindR')
 ```
 
-#### Predefined Marker Sets
+#### Conjuntos de Marcadores Predefinidos
 
 ```python
 from mouse_locomotor_tracker.tracking import MOUSE_VENTRAL, MOUSE_LATERAL
 
-# Ventral view (bottom camera)
-MOUSE_VENTRAL  # 11 markers, 6 limb pairs
+# Vista ventral (cámara inferior)
+MOUSE_VENTRAL  # 11 marcadores, 6 pares de extremidades
 
-# Lateral view (side camera)
-MOUSE_LATERAL  # 6 markers for joint angles
+# Vista lateral (cámara lateral)
+MOUSE_LATERAL  # 6 marcadores para ángulos articulares
 ```
 
 ---
 
 ### `tracking.MockTracker`
 
-Generate synthetic tracking data for testing.
+Generar datos de tracking sintéticos para testing.
 
 ```python
 from mouse_locomotor_tracker.tracking import MockTracker
@@ -143,16 +143,16 @@ from mouse_locomotor_tracker.tracking import MockTracker
 
 ```python
 MockTracker(
-    markers: List[str],            # Marker names
-    model_name: str = "DLC_mock"   # Model identifier
+    markers: List[str],            # Nombres de marcadores
+    model_name: str = "DLC_mock"   # Identificador de modelo
 )
 ```
 
-#### Methods
+#### Métodos
 
 ##### `generate_tracks(metadata, gait_frequency, speed_cm_s, noise_level) -> pd.DataFrame`
 
-Generate synthetic tracking data.
+Generar datos de tracking sintéticos.
 
 ```python
 tracker = MockTracker(markers=["snout", "hindL", "hindR", "tail"])
@@ -160,28 +160,28 @@ tracks = tracker.generate_tracks(
     metadata=metadata,
     gait_frequency=4.0,    # Hz
     speed_cm_s=15.0,       # cm/s
-    noise_level=1.0        # pixels
+    noise_level=1.0        # píxeles
 )
 ```
 
-**Parameters:**
+**Parámetros:**
 
-| Parameter | Type | Default | Description |
+| Parámetro | Tipo | Default | Descripción |
 |-----------|------|---------|-------------|
-| `metadata` | `VideoMetadata` | required | Video metadata |
-| `gait_frequency` | `float` | `4.0` | Gait cycle frequency (Hz) |
-| `speed_cm_s` | `float` | `15.0` | Locomotion speed (cm/s) |
-| `noise_level` | `float` | `1.0` | Tracking noise (pixels) |
+| `metadata` | `VideoMetadata` | requerido | Metadatos de video |
+| `gait_frequency` | `float` | `4.0` | Frecuencia del ciclo de marcha (Hz) |
+| `speed_cm_s` | `float` | `15.0` | Velocidad de locomoción (cm/s) |
+| `noise_level` | `float` | `1.0` | Ruido de tracking (píxeles) |
 
-**Returns:** `pd.DataFrame` with MultiIndex columns matching DeepLabCut format.
+**Retorna:** `pd.DataFrame` con columnas MultiIndex que coinciden con formato DeepLabCut.
 
 ---
 
-## Analysis Module
+## Módulo de Análisis
 
 ### `analysis.VelocityAnalyzer`
 
-Analyze speed and acceleration from tracking data.
+Analizar velocidad y aceleración desde datos de tracking.
 
 ```python
 from mouse_locomotor_tracker.analysis import VelocityAnalyzer
@@ -191,33 +191,33 @@ from mouse_locomotor_tracker.analysis import VelocityAnalyzer
 
 ```python
 VelocityAnalyzer(
-    smoothing_factor: int = 10,        # Speed smoothing window
-    accel_smoothing_factor: int = 12,  # Acceleration smoothing window
-    speed_threshold: float = 5.0,      # Movement threshold (cm/s)
-    drag_threshold: float = 0.25       # Drag event threshold (seconds)
+    smoothing_factor: int = 10,        # Ventana de suavizado de velocidad
+    accel_smoothing_factor: int = 12,  # Ventana de suavizado de aceleración
+    speed_threshold: float = 5.0,      # Umbral de movimiento (cm/s)
+    drag_threshold: float = 0.25       # Umbral de evento de arrastre (segundos)
 )
 ```
 
-#### Methods
+#### Métodos
 
 ##### `compute_speed(positions, fps, pixel_to_mm) -> np.ndarray`
 
-Compute instantaneous speed from position array.
+Calcular velocidad instantánea desde array de posiciones.
 
 ```python
 analyzer = VelocityAnalyzer()
-positions = np.array([[x1, y1], [x2, y2], ...])  # Shape: (n_frames, 2)
+positions = np.array([[x1, y1], [x2, y2], ...])  # Forma: (n_frames, 2)
 speed = analyzer.compute_speed(
     positions=positions,
     fps=100,
     pixel_to_mm=0.3125
 )
-# Returns: 1D array of speed values in cm/s
+# Retorna: Array 1D de valores de velocidad en cm/s
 ```
 
 ##### `compute_speed_from_markers(tracks, model_name, speed_markers, fps, pixel_to_mm) -> np.ndarray`
 
-Compute body speed from multiple markers.
+Calcular velocidad corporal desde múltiples marcadores.
 
 ```python
 speed = analyzer.compute_speed_from_markers(
@@ -231,16 +231,16 @@ speed = analyzer.compute_speed_from_markers(
 
 ##### `compute_acceleration(speed, fps) -> np.ndarray`
 
-Compute acceleration from speed profile.
+Calcular aceleración desde perfil de velocidad.
 
 ```python
 accel = analyzer.compute_acceleration(speed=speed, fps=100)
-# Returns: 1D array of acceleration values in cm/s^2
+# Retorna: Array 1D de valores de aceleración en cm/s^2
 ```
 
 ##### `detect_drag_events(acceleration, fps) -> Tuple[np.ndarray, np.ndarray, dict]`
 
-Detect drag and recovery events.
+Detectar eventos de arrastre y recuperación.
 
 ```python
 drag_idx, recovery_idx, stats = analyzer.detect_drag_events(
@@ -248,23 +248,23 @@ drag_idx, recovery_idx, stats = analyzer.detect_drag_events(
     fps=100
 )
 
-# stats contains:
-# - drag_count: Number of drag events
-# - recovery_count: Number of recovery events
-# - drag_duration: Total drag duration (seconds)
-# - recovery_duration: Total recovery duration (seconds)
-# - peak_acceleration: Maximum acceleration
-# - min_acceleration: Minimum acceleration
+# stats contiene:
+# - drag_count: Número de eventos de arrastre
+# - recovery_count: Número de eventos de recuperación
+# - drag_duration: Duración total de arrastre (segundos)
+# - recovery_duration: Duración total de recuperación (segundos)
+# - peak_acceleration: Aceleración máxima
+# - min_acceleration: Aceleración mínima
 ```
 
 ##### `apply_smoothing(data, method, window_size) -> np.ndarray`
 
-Apply smoothing filter to data.
+Aplicar filtro de suavizado a los datos.
 
 ```python
 smoothed = analyzer.apply_smoothing(
     data=noisy_data,
-    method='moving_average',  # or 'savgol'
+    method='moving_average',  # o 'savgol'
     window_size=10
 )
 ```
@@ -273,7 +273,7 @@ smoothed = analyzer.apply_smoothing(
 
 ### `analysis.CircularCoordinationAnalyzer`
 
-Analyze limb coordination using circular statistics.
+Analizar coordinación de extremidades usando estadística circular.
 
 ```python
 from mouse_locomotor_tracker.analysis import CircularCoordinationAnalyzer
@@ -283,25 +283,25 @@ from mouse_locomotor_tracker.analysis import CircularCoordinationAnalyzer
 
 ```python
 CircularCoordinationAnalyzer(
-    interpolation_factor: int = 4,  # Data interpolation factor
-    smoothing_factor: int = 10      # Smoothing window
+    interpolation_factor: int = 4,  # Factor de interpolación de datos
+    smoothing_factor: int = 10      # Ventana de suavizado
 )
 ```
 
-#### Methods
+#### Métodos
 
 ##### `circular_mean(phi) -> Tuple[float, float]`
 
-Compute circular mean and resultant vector length.
+Calcular media circular y longitud del vector resultante.
 
 ```python
 analyzer = CircularCoordinationAnalyzer()
 mean_angle, R = analyzer.circular_mean(phi=phase_angles)
-# mean_angle: Mean direction in radians
-# R: Resultant length [0, 1]
+# mean_angle: Dirección media en radianes
+# R: Longitud resultante [0, 1]
 ```
 
-**Mathematical Definition:**
+**Definición Matemática:**
 
 ```
 X = mean(cos(phi))
@@ -312,7 +312,7 @@ mean_phi = atan2(Y, X)
 
 ##### `compute_limb_coordination(stride_0, stride_1, mov_duration) -> Tuple`
 
-Compute coordination between two limbs.
+Calcular coordinación entre dos extremidades.
 
 ```python
 phi, R, mean_phase_deg, n_steps = analyzer.compute_limb_coordination(
@@ -320,15 +320,15 @@ phi, R, mean_phase_deg, n_steps = analyzer.compute_limb_coordination(
     stride_1=right_hind_stride,
     mov_duration=30.0
 )
-# phi: Array of phase angles per cycle
-# R: Resultant length (coordination strength)
-# mean_phase_deg: Mean phase in degrees
-# n_steps: Number of steps detected
+# phi: Array de ángulos de fase por ciclo
+# R: Longitud resultante (fuerza de coordinación)
+# mean_phase_deg: Fase media en grados
+# n_steps: Número de pasos detectados
 ```
 
 ##### `analyze_all_limb_pairs(tracks_dict, limb_pairs, mov_duration) -> dict`
 
-Analyze all defined limb pairs.
+Analizar todos los pares de extremidades definidos.
 
 ```python
 tracks_dict = {
@@ -354,24 +354,24 @@ results = analyzer.analyze_all_limb_pairs(
 
 ##### `interpret_coordination(R, mean_phase) -> str`
 
-Interpret coordination pattern.
+Interpretar patrón de coordinación.
 
 ```python
 pattern = analyzer.interpret_coordination(R=0.9, mean_phase=180.0)
-# Returns: 'alternating'
+# Retorna: 'alternating'
 
-# Possible returns:
-# - 'synchronized': In-phase (0 deg)
-# - 'alternating': Anti-phase (180 deg)
-# - 'leading': ~90 deg lead
-# - 'lagging': ~90 deg lag
+# Posibles retornos:
+# - 'synchronized': En fase (0 grados)
+# - 'alternating': Anti-fase (180 grados)
+# - 'leading': ~90 grados adelante
+# - 'lagging': ~90 grados atrás
 # - 'weak_coordination': 0.3 < R < 0.7
 # - 'no_coordination': R < 0.3
 ```
 
 ##### `measure_cycles(stride) -> Tuple[int, np.ndarray]`
 
-Detect gait cycles in stride data.
+Detectar ciclos de marcha en datos de zancada.
 
 ```python
 n_cycles, peak_indices = analyzer.measure_cycles(stride=stride_array)
@@ -379,7 +379,7 @@ n_cycles, peak_indices = analyzer.measure_cycles(stride=stride_array)
 
 ##### `iqr_mean(data) -> float`
 
-Compute mean after removing outliers via IQR method.
+Calcular media después de remover outliers via método IQR.
 
 ```python
 robust_mean = analyzer.iqr_mean(data=noisy_array)
@@ -389,7 +389,7 @@ robust_mean = analyzer.iqr_mean(data=noisy_array)
 
 ### `analysis.GaitCycleDetector`
 
-Detect and analyze gait cycles.
+Detectar y analizar ciclos de marcha.
 
 ```python
 from mouse_locomotor_tracker.analysis import GaitCycleDetector
@@ -399,17 +399,17 @@ from mouse_locomotor_tracker.analysis import GaitCycleDetector
 
 ```python
 GaitCycleDetector(
-    min_peak_distance: int = None,     # Min frames between peaks (auto if None)
-    interpolation_factor: int = 4,     # Interpolation factor
-    smoothing_factor: int = 10         # Smoothing window
+    min_peak_distance: int = None,     # Cuadros mín entre picos (auto si None)
+    interpolation_factor: int = 4,     # Factor de interpolación
+    smoothing_factor: int = 10         # Ventana de suavizado
 )
 ```
 
-#### Methods
+#### Métodos
 
 ##### `detect_cycles(stride, fps) -> Tuple[int, np.ndarray, np.ndarray]`
 
-Detect gait cycles using peak detection.
+Detectar ciclos de marcha usando detección de picos.
 
 ```python
 detector = GaitCycleDetector()
@@ -417,38 +417,38 @@ n_cycles, peaks, troughs = detector.detect_cycles(
     stride=stride_array,
     fps=100
 )
-# n_cycles: Number of cycles detected
-# peaks: Indices of stride maxima
-# troughs: Indices of stride minima
+# n_cycles: Número de ciclos detectados
+# peaks: Índices de máximos de zancada
+# troughs: Índices de mínimos de zancada
 ```
 
 ##### `compute_cadence(stride, duration) -> float`
 
-Compute stepping frequency.
+Calcular frecuencia de paso.
 
 ```python
 cadence = detector.compute_cadence(
     stride=stride_array,
-    duration=30.0  # seconds
+    duration=30.0  # segundos
 )
-# Returns: Steps per second (Hz)
+# Retorna: Pasos por segundo (Hz)
 ```
 
 ##### `compute_stride_length(cadence, avg_speed) -> float`
 
-Compute average stride length.
+Calcular longitud promedio de zancada.
 
 ```python
 stride_length = detector.compute_stride_length(
     cadence=4.0,      # Hz
     avg_speed=16.0    # cm/s
 )
-# Returns: 4.0 cm (stride_length = speed / cadence)
+# Retorna: 4.0 cm (stride_length = speed / cadence)
 ```
 
 ##### `analyze_gait_regularity(stride, fps) -> dict`
 
-Analyze gait cycle regularity.
+Analizar regularidad del ciclo de marcha.
 
 ```python
 regularity = detector.analyze_gait_regularity(
@@ -456,31 +456,31 @@ regularity = detector.analyze_gait_regularity(
     fps=100
 )
 
-# Returns:
+# Retorna:
 # {
-#     'mean_cycle_duration': 0.25,      # seconds
-#     'std_cycle_duration': 0.02,       # seconds
-#     'cv_cycle_duration': 0.08,        # coefficient of variation
-#     'mean_stride_amplitude': 15.3,    # pixels
-#     'std_stride_amplitude': 2.1       # pixels
+#     'mean_cycle_duration': 0.25,      # segundos
+#     'std_cycle_duration': 0.02,       # segundos
+#     'cv_cycle_duration': 0.08,        # coeficiente de variación
+#     'mean_stride_amplitude': 15.3,    # píxeles
+#     'std_stride_amplitude': 2.1       # píxeles
 # }
 ```
 
 ##### `interpolate_stride(stride, duration) -> np.ndarray`
 
-Interpolate stride data for improved detection.
+Interpolar datos de zancada para mejor detección.
 
 ```python
 interpolated = detector.interpolate_stride(
     stride=stride_array,
     duration=30.0
 )
-# Returns: Array with length = original * interpolation_factor
+# Retorna: Array con longitud = original * interpolation_factor
 ```
 
 ##### `compute_all_limb_metrics(limb_strides, duration, avg_speed, fps) -> dict`
 
-Compute metrics for all limbs.
+Calcular métricas para todas las extremidades.
 
 ```python
 limb_strides = {
@@ -508,17 +508,17 @@ metrics = detector.compute_all_limb_metrics(
 
 ##### `detect_gait_events(stride, fps) -> dict`
 
-Detect specific gait events (touchdown, liftoff).
+Detectar eventos específicos de marcha (contacto, despegue).
 
 ```python
 events = detector.detect_gait_events(stride=stride_array, fps=100)
 
-# Returns:
+# Retorna:
 # {
-#     'peaks': np.array([...]),        # Maximum extension indices
-#     'troughs': np.array([...]),      # Maximum flexion indices
-#     'stance_start': np.array([...]), # Paw touchdown indices
-#     'swing_start': np.array([...])   # Paw liftoff indices
+#     'peaks': np.array([...]),        # Índices de máxima extensión
+#     'troughs': np.array([...]),      # Índices de máxima flexión
+#     'stance_start': np.array([...]), # Índices de contacto de pata
+#     'swing_start': np.array([...])   # Índices de despegue de pata
 # }
 ```
 
@@ -526,7 +526,7 @@ events = detector.detect_gait_events(stride=stride_array, fps=100)
 
 ### `analysis.LocomotorPipeline`
 
-Main analysis pipeline integrating all modules.
+Pipeline de análisis principal que integra todos los módulos.
 
 ```python
 from mouse_locomotor_tracker import LocomotorPipeline
@@ -538,20 +538,20 @@ from mouse_locomotor_tracker import LocomotorPipeline
 LocomotorPipeline(config: dict = None)
 ```
 
-**Config Options:**
+**Opciones de Config:**
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `smoothing_factor` | `int` | `10` | Speed smoothing window |
-| `interpolation_factor` | `int` | `4` | Stride interpolation |
-| `speed_threshold` | `float` | `5.0` | Movement threshold (cm/s) |
-| `drag_threshold` | `float` | `0.25` | Drag event threshold (s) |
+| Clave | Tipo | Default | Descripción |
+|-------|------|---------|-------------|
+| `smoothing_factor` | `int` | `10` | Ventana de suavizado de velocidad |
+| `interpolation_factor` | `int` | `4` | Interpolación de zancada |
+| `speed_threshold` | `float` | `5.0` | Umbral de movimiento (cm/s) |
+| `drag_threshold` | `float` | `0.25` | Umbral de evento de arrastre (s) |
 
-#### Methods
+#### Métodos
 
 ##### `process_tracks(tracks, metadata, model_name, markers, limb_pairs, speed_markers) -> dict`
 
-Run complete analysis pipeline.
+Ejecutar pipeline de análisis completo.
 
 ```python
 pipeline = LocomotorPipeline(config={'smoothing_factor': 10})
@@ -566,51 +566,51 @@ results = pipeline.process_tracks(
 )
 ```
 
-**Returns:** Dictionary with structure:
+**Retorna:** Diccionario con estructura:
 
 ```python
 {
-    'metadata': {...},      # Video metadata
-    'velocity': {...},      # Speed and acceleration results
-    'coordination': {...},  # Limb coordination results
-    'gait_cycles': {...},   # Gait cycle metrics
-    'summary': {...}        # Aggregate statistics
+    'metadata': {...},      # Metadatos de video
+    'velocity': {...},      # Resultados de velocidad y aceleración
+    'coordination': {...},  # Resultados de coordinación de extremidades
+    'gait_cycles': {...},   # Métricas de ciclo de marcha
+    'summary': {...}        # Estadísticas agregadas
 }
 ```
 
 ##### `export_results(output_path, format) -> None`
 
-Export results to file.
+Exportar resultados a archivo.
 
 ```python
 pipeline.export_results("results.json", format="json")
 pipeline.export_results("summary.csv", format="csv")
 ```
 
-**Supported Formats:**
+**Formatos Soportados:**
 
-| Format | Content | File Extension |
-|--------|---------|----------------|
-| `json` | Full results | `.json` |
-| `csv` | Summary only | `.csv` |
+| Formato | Contenido | Extensión de Archivo |
+|---------|-----------|---------------------|
+| `json` | Resultados completos | `.json` |
+| `csv` | Solo resumen | `.csv` |
 
 ---
 
-## Visualization Module
+## Módulo de Visualización
 
 ### `visualization.Plotter`
 
-Static visualization utilities.
+Utilidades de visualización estática.
 
 ```python
 from mouse_locomotor_tracker.visualization import Plotter
 ```
 
-#### Methods
+#### Métodos
 
 ##### `plot_speed_profile(speed, fps, ax=None) -> matplotlib.axes.Axes`
 
-Plot speed over time.
+Graficar velocidad en el tiempo.
 
 ```python
 plotter = Plotter()
@@ -619,7 +619,7 @@ ax = plotter.plot_speed_profile(speed=speed_array, fps=100)
 
 ##### `plot_coordination_polar(coordination_results, ax=None) -> matplotlib.axes.Axes`
 
-Create polar plot of coordination.
+Crear gráfico polar de coordinación.
 
 ```python
 ax = plotter.plot_coordination_polar(
@@ -629,7 +629,7 @@ ax = plotter.plot_coordination_polar(
 
 ##### `plot_gait_metrics(gait_results, ax=None) -> matplotlib.axes.Axes`
 
-Plot gait metrics comparison.
+Graficar comparación de métricas de marcha.
 
 ```python
 ax = plotter.plot_gait_metrics(
@@ -639,7 +639,7 @@ ax = plotter.plot_gait_metrics(
 
 ##### `create_summary_figure(results, output_path=None)`
 
-Create comprehensive summary figure.
+Crear figura de resumen completa.
 
 ```python
 plotter.create_summary_figure(
@@ -650,21 +650,21 @@ plotter.create_summary_figure(
 
 ---
 
-## Export Module
+## Módulo de Exportación
 
 ### `export.JSONExporter`
 
-Export results to JSON format.
+Exportar resultados a formato JSON.
 
 ```python
 from mouse_locomotor_tracker.export import JSONExporter
 ```
 
-#### Methods
+#### Métodos
 
 ##### `export(results, output_path) -> None`
 
-Export results to JSON file.
+Exportar resultados a archivo JSON.
 
 ```python
 exporter = JSONExporter()
@@ -675,17 +675,17 @@ exporter.export(results=results, output_path="output.json")
 
 ### `export.CSVExporter`
 
-Export results to CSV format.
+Exportar resultados a formato CSV.
 
 ```python
 from mouse_locomotor_tracker.export import CSVExporter
 ```
 
-#### Methods
+#### Métodos
 
 ##### `export(results, output_path) -> None`
 
-Export summary statistics to CSV.
+Exportar estadísticas de resumen a CSV.
 
 ```python
 exporter = CSVExporter()
@@ -694,14 +694,14 @@ exporter.export(results=results, output_path="summary.csv")
 
 ##### `export_detailed(results, output_dir) -> None`
 
-Export detailed results to multiple CSV files.
+Exportar resultados detallados a múltiples archivos CSV.
 
 ```python
 exporter.export_detailed(
     results=results,
     output_dir="results/"
 )
-# Creates:
+# Crea:
 # - results/velocity.csv
 # - results/coordination.csv
 # - results/gait_cycles.csv
@@ -710,35 +710,35 @@ exporter.export_detailed(
 
 ---
 
-## Type Definitions
+## Definiciones de Tipos
 
-### Common Types
+### Tipos Comunes
 
 ```python
 from typing import Dict, List, Tuple, Any, Optional
 import numpy as np
 import pandas as pd
 
-# Position data
-Positions = np.ndarray  # Shape: (n_frames, 2)
+# Datos de posición
+Positions = np.ndarray  # Forma: (n_frames, 2)
 
-# Stride data
-StrideArray = np.ndarray  # Shape: (n_frames,)
+# Datos de zancada
+StrideArray = np.ndarray  # Forma: (n_frames,)
 
-# Phase angles
-PhaseArray = np.ndarray  # Shape: (n_cycles,)
+# Ángulos de fase
+PhaseArray = np.ndarray  # Forma: (n_cycles,)
 
-# Tracking DataFrame
-TrackingData = pd.DataFrame  # MultiIndex columns
+# DataFrame de Tracking
+TrackingData = pd.DataFrame  # Columnas MultiIndex
 
-# Results dictionary
+# Diccionario de resultados
 AnalysisResults = Dict[str, Any]
 ```
 
-### Result Type Schemas
+### Esquemas de Tipos de Resultado
 
 ```python
-# Velocity Results
+# Resultados de Velocidad
 VelocityResults = {
     'mean_speed': float,        # cm/s
     'max_speed': float,         # cm/s
@@ -747,7 +747,7 @@ VelocityResults = {
     'speed_profile': List[float]
 }
 
-# Coordination Results
+# Resultados de Coordinación
 CoordinationResults = {
     'pair_name': {
         'R': float,              # [0, 1]
@@ -756,20 +756,20 @@ CoordinationResults = {
     }
 }
 
-# Gait Results
+# Resultados de Marcha
 GaitResults = {
     'limb_name': {
         'cadence': float,           # Hz
         'stride_length': float,     # cm
         'n_cycles': int,
-        'mean_cycle_duration': float,  # seconds
+        'mean_cycle_duration': float,  # segundos
         'cv_cycle_duration': float     # [0, 1]
     }
 }
 
-# Summary Results
+# Resultados de Resumen
 SummaryResults = {
-    'duration': float,              # seconds
+    'duration': float,              # segundos
     'mean_speed_cm_s': float,
     'mean_coordination_R': float,
     'mean_cadence_hz': float,
@@ -779,43 +779,43 @@ SummaryResults = {
 
 ---
 
-## Error Handling
+## Manejo de Errores
 
-### Common Exceptions
+### Excepciones Comunes
 
 ```python
-# ValueError for invalid input
+# ValueError para entrada inválida
 try:
     analyzer.compute_speed(empty_array, fps=100, pixel_to_mm=0.3)
 except ValueError as e:
-    print(f"Invalid input: {e}")
+    print(f"Entrada inválida: {e}")
 
-# KeyError for missing markers
+# KeyError para marcadores faltantes
 try:
     speed = analyzer.compute_speed_from_markers(
         tracks, model_name, ['nonexistent_marker'], fps, pixel_to_mm
     )
 except KeyError as e:
-    print(f"Missing marker: {e}")
+    print(f"Marcador faltante: {e}")
 ```
 
-### Validation Functions
+### Funciones de Validación
 
 ```python
 from mouse_locomotor_tracker.utils import validate_tracks, validate_metadata
 
-# Validate tracking data structure
+# Validar estructura de datos de tracking
 is_valid, errors = validate_tracks(tracks)
 if not is_valid:
-    print(f"Invalid tracking data: {errors}")
+    print(f"Datos de tracking inválidos: {errors}")
 
-# Validate metadata
+# Validar metadatos
 is_valid, errors = validate_metadata(metadata)
 ```
 
 ---
 
-## Version Information
+## Información de Versión
 
 ```python
 import mouse_locomotor_tracker

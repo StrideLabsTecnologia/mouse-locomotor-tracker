@@ -1,88 +1,88 @@
 # Mouse Locomotor Tracker
 
-A comprehensive Python library for analyzing mouse locomotion from video recordings using DeepLabCut pose estimation.
+Una librería completa en Python para analizar la locomoción de ratones desde grabaciones de video usando estimación de pose con DeepLabCut.
 
-## Overview
+## Descripción General
 
-Mouse Locomotor Tracker provides automated analysis of rodent locomotion, including:
+Mouse Locomotor Tracker proporciona análisis automatizado de la locomoción de roedores, incluyendo:
 
-- **Velocity Analysis**: Speed, acceleration, and drag detection
-- **Limb Coordination**: Phase relationships between limbs using circular statistics
-- **Gait Cycle Detection**: Cadence, stride length, and gait regularity metrics
-- **Export**: JSON, CSV, and HDF5 output formats
+- **Análisis de Velocidad**: Velocidad, aceleración y detección de arrastre
+- **Coordinación de Extremidades**: Relaciones de fase entre extremidades usando estadística circular
+- **Detección de Ciclo de Marcha**: Cadencia, longitud de zancada y métricas de regularidad de marcha
+- **Exportación**: Formatos de salida JSON, CSV y HDF5
 
 ```
 +------------------+     +------------------+     +------------------+
 |                  |     |                  |     |                  |
-|  Video Input     +---->+  DeepLabCut      +---->+  Analysis        |
-|  (.avi, .mp4)    |     |  Pose Tracking   |     |  Pipeline        |
+|  Entrada Video   +---->+  DeepLabCut      +---->+  Pipeline de     |
+|  (.avi, .mp4)    |     |  Tracking Pose   |     |  Análisis        |
 |                  |     |                  |     |                  |
 +------------------+     +------------------+     +--------+---------+
-                                                          |
-                         +--------------------------------+
-                         |
-          +--------------+---------------+----------------+
-          |              |               |                |
-          v              v               v                v
-    +-----------+  +-----------+  +------------+  +------------+
-    | Velocity  |  | Coordin.  |  | Gait       |  | Export     |
-    | Analysis  |  | Analysis  |  | Cycles     |  | Module     |
-    +-----------+  +-----------+  +------------+  +------------+
+                                                         |
+                        +--------------------------------+
+                        |
+         +--------------+---------------+----------------+
+         |              |               |                |
+         v              v               v                v
+   +-----------+  +-----------+  +------------+  +------------+
+   | Análisis  |  | Análisis  |  | Ciclos     |  | Módulo     |
+   | Velocidad |  | Coord.    |  | Marcha     |  | Export     |
+   +-----------+  +-----------+  +------------+  +------------+
 ```
 
-## Features
+## Características
 
-### Velocity Analysis
-- Instantaneous and average speed computation
-- Acceleration and deceleration detection
-- Drag event identification and quantification
-- Multiple smoothing filter options
+### Análisis de Velocidad
+- Cálculo de velocidad instantánea y promedio
+- Detección de aceleración y desaceleración
+- Identificación y cuantificación de eventos de arrastre
+- Múltiples opciones de filtros de suavizado
 
-### Limb Coordination
-- Circular statistics for phase analysis
-- All standard limb pair combinations
-- Gait pattern classification (trot, pace, bound)
-- Resultant vector length (R) for coordination strength
+### Coordinación de Extremidades
+- Estadística circular para análisis de fase
+- Todas las combinaciones estándar de pares de extremidades
+- Clasificación de patrones de marcha (trote, paso, galope)
+- Longitud del vector resultante (R) para fuerza de coordinación
 
-### Gait Cycle Detection
-- Automatic cycle detection using peak finding
-- Cadence (step frequency) calculation
-- Stride length estimation
-- Gait regularity metrics (CV of cycle duration)
+### Detección de Ciclo de Marcha
+- Detección automática de ciclos usando búsqueda de picos
+- Cálculo de cadencia (frecuencia de paso)
+- Estimación de longitud de zancada
+- Métricas de regularidad de marcha (CV de duración de ciclo)
 
-### Export Options
-- JSON for full results with metadata
-- CSV for summary statistics
-- HDF5 for large datasets
-- Matplotlib visualizations
+### Opciones de Exportación
+- JSON para resultados completos con metadatos
+- CSV para estadísticas resumidas
+- HDF5 para grandes conjuntos de datos
+- Visualizaciones con Matplotlib
 
-## Quick Start
+## Inicio Rápido
 
-### Installation
+### Instalación
 
 ```bash
-# Clone the repository
+# Clonar el repositorio
 git clone https://github.com/stridelabs/mouse-locomotor-tracker.git
 cd mouse-locomotor-tracker
 
-# Create virtual environment
+# Crear entorno virtual
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # En Windows: venv\Scripts\activate
 
-# Install dependencies
+# Instalar dependencias
 pip install -r requirements.txt
 
-# Install in development mode
+# Instalar en modo desarrollo
 pip install -e .
 ```
 
-### Basic Usage
+### Uso Básico
 
 ```python
 from mouse_locomotor_tracker import LocomotorPipeline
 from mouse_locomotor_tracker.tracking import VideoMetadata, MarkerSet
 
-# Configure markers
+# Configurar marcadores
 markers = MarkerSet(
     name="mouse_ventral",
     markers=["snout", "foreL", "foreR", "hindL", "hindR", "torso", "tail"],
@@ -93,21 +93,21 @@ markers = MarkerSet(
     speed_markers=["snout", "torso", "tail"]
 )
 
-# Load tracking data (DeepLabCut output)
+# Cargar datos de tracking (salida de DeepLabCut)
 import pandas as pd
 tracks = pd.read_hdf("tracking_results.h5")
 
-# Create metadata
+# Crear metadatos
 metadata = VideoMetadata(
-    duration=30.0,      # seconds
-    fps=100,            # frames per second
+    duration=30.0,      # segundos
+    fps=100,            # cuadros por segundo
     n_frames=3000,
     width=640,
     height=480,
     pixel_width_mm=0.3125
 )
 
-# Run analysis
+# Ejecutar análisis
 pipeline = LocomotorPipeline()
 results = pipeline.process_tracks(
     tracks=tracks,
@@ -118,59 +118,59 @@ results = pipeline.process_tracks(
     speed_markers=markers.speed_markers
 )
 
-# Export results
+# Exportar resultados
 pipeline.export_results("results.json", format="json")
 
-# Access specific metrics
-print(f"Mean Speed: {results['summary']['mean_speed_cm_s']:.2f} cm/s")
-print(f"Mean Cadence: {results['summary']['mean_cadence_hz']:.2f} Hz")
-print(f"Coordination (R): {results['summary']['mean_coordination_R']:.3f}")
+# Acceder a métricas específicas
+print(f"Velocidad Media: {results['summary']['mean_speed_cm_s']:.2f} cm/s")
+print(f"Cadencia Media: {results['summary']['mean_cadence_hz']:.2f} Hz")
+print(f"Coordinación (R): {results['summary']['mean_coordination_R']:.3f}")
 ```
 
-## Architecture
+## Arquitectura
 
 ```
 mouse-locomotor-tracker/
 |
-+-- tracking/                  # Tracking module
++-- tracking/                  # Módulo de tracking
 |   +-- __init__.py
-|   +-- dlc_adapter.py        # DeepLabCut interface
-|   +-- marker_config.py      # Marker configuration
-|   +-- video_metadata.py     # Video file metadata
-|   +-- mock_tracker.py       # Synthetic data for testing
-|   +-- track_processor.py    # Track post-processing
+|   +-- dlc_adapter.py        # Interfaz DeepLabCut
+|   +-- marker_config.py      # Configuración de marcadores
+|   +-- video_metadata.py     # Metadatos de archivo de video
+|   +-- mock_tracker.py       # Datos sintéticos para testing
+|   +-- track_processor.py    # Post-procesamiento de tracks
 |
-+-- analysis/                  # Analysis modules
++-- analysis/                  # Módulos de análisis
 |   +-- __init__.py
 |   +-- velocity.py           # VelocityAnalyzer
 |   +-- coordination.py       # CircularCoordinationAnalyzer
 |   +-- gait_cycles.py        # GaitCycleDetector
 |   +-- pipeline.py           # LocomotorPipeline
 |
-+-- visualization/             # Visualization tools
++-- visualization/             # Herramientas de visualización
 |   +-- __init__.py
-|   +-- plotter.py            # Static plots
-|   +-- video_overlay.py      # Video annotation
+|   +-- plotter.py            # Gráficos estáticos
+|   +-- video_overlay.py      # Anotación de video
 |
-+-- export/                    # Export functionality
++-- export/                    # Funcionalidad de exportación
 |   +-- __init__.py
 |   +-- json_export.py
 |   +-- csv_export.py
 |   +-- hdf5_export.py
 |
-+-- config/                    # Configuration files
++-- config/                    # Archivos de configuración
 |   +-- default_config.yaml
 |   +-- markers_ventral.yaml
 |   +-- markers_lateral.yaml
 |
-+-- tests/                     # Test suite
++-- tests/                     # Suite de tests
 |   +-- conftest.py
 |   +-- test_velocity.py
 |   +-- test_coordination.py
 |   +-- test_gait_cycles.py
 |   +-- test_integration.py
 |
-+-- docs/                      # Documentation
++-- docs/                      # Documentación
     +-- README.md
     +-- INSTALLATION.md
     +-- USER_GUIDE.md
@@ -178,23 +178,23 @@ mouse-locomotor-tracker/
     +-- METRICS.md
 ```
 
-## Workflow Diagram
+## Diagrama de Flujo de Trabajo
 
 ```
                     +-------------------+
-                    |   Raw Video       |
+                    |   Video Raw       |
                     |   (.avi, .mp4)    |
                     +---------+---------+
                               |
                               v
                     +-------------------+
                     |   DeepLabCut      |
-                    |   Pose Estimation |
+                    |   Estimación Pose |
                     +---------+---------+
                               |
                               v
                     +-------------------+
-                    |   Tracking Data   |
+                    |   Datos Tracking  |
                     |   (HDF5/CSV)      |
                     +---------+---------+
                               |
@@ -202,57 +202,57 @@ mouse-locomotor-tracker/
               |               |               |
               v               v               v
        +------+------+ +------+------+ +------+------+
-       |  Velocity   | | Coordination| | Gait Cycle  |
-       |  Analyzer   | |  Analyzer   | |  Detector   |
+       |  Analizador | | Analizador  | | Detector    |
+       |  Velocidad  | | Coordinación| | Ciclo Marcha|
        +------+------+ +------+------+ +------+------+
               |               |               |
               +---------------+---------------+
                               |
                               v
                     +-------------------+
-                    |   Results         |
-                    |   Aggregation     |
+                    |   Agregación      |
+                    |   Resultados      |
                     +---------+---------+
                               |
               +---------------+---------------+
               |               |               |
               v               v               v
        +------+------+ +------+------+ +------+------+
-       |    JSON     | |    CSV      | |   Plots     |
+       |    JSON     | |    CSV      | |   Gráficos  |
        |   Export    | |   Export    | |   & Video   |
        +-------------+ +-------------+ +-------------+
 ```
 
-## API Reference
+## Referencia de API
 
-### Core Classes
+### Clases Principales
 
-| Class | Description |
+| Clase | Descripción |
 |-------|-------------|
-| `LocomotorPipeline` | Main pipeline orchestrating all analysis modules |
-| `VelocityAnalyzer` | Speed and acceleration computation |
-| `CircularCoordinationAnalyzer` | Limb phase relationship analysis |
-| `GaitCycleDetector` | Gait cycle detection and stride metrics |
-| `VideoMetadata` | Video file metadata container |
-| `MarkerSet` | Marker configuration for tracking |
+| `LocomotorPipeline` | Pipeline principal que orquesta todos los módulos de análisis |
+| `VelocityAnalyzer` | Cálculo de velocidad y aceleración |
+| `CircularCoordinationAnalyzer` | Análisis de relación de fase entre extremidades |
+| `GaitCycleDetector` | Detección de ciclo de marcha y métricas de zancada |
+| `VideoMetadata` | Contenedor de metadatos de archivo de video |
+| `MarkerSet` | Configuración de marcadores para tracking |
 
-### Quick Reference
+### Referencia Rápida
 
 ```python
-# Velocity Analysis
+# Análisis de Velocidad
 from analysis.velocity import VelocityAnalyzer
 analyzer = VelocityAnalyzer(smoothing_factor=10)
 speed = analyzer.compute_speed(positions, fps, pixel_to_mm)
 accel = analyzer.compute_acceleration(speed, fps)
 drag, recovery, stats = analyzer.detect_drag_events(accel, fps)
 
-# Coordination Analysis
+# Análisis de Coordinación
 from analysis.coordination import CircularCoordinationAnalyzer
 coord = CircularCoordinationAnalyzer()
 mean_phi, R = coord.circular_mean(phase_angles)
 results = coord.analyze_all_limb_pairs(tracks, limb_pairs, duration)
 
-# Gait Cycle Detection
+# Detección de Ciclo de Marcha
 from analysis.gait_cycles import GaitCycleDetector
 detector = GaitCycleDetector()
 n_cycles, peaks, troughs = detector.detect_cycles(stride, fps)
@@ -260,61 +260,61 @@ cadence = detector.compute_cadence(stride, duration)
 stride_length = detector.compute_stride_length(cadence, avg_speed)
 ```
 
-## Documentation
+## Documentación
 
-- [Installation Guide](INSTALLATION.md) - Detailed installation instructions
-- [User Guide](USER_GUIDE.md) - Step-by-step usage tutorial
-- [API Reference](API.md) - Complete API documentation
-- [Metrics Guide](METRICS.md) - Explanation of computed metrics
+- [Guía de Instalación](INSTALLATION.md) - Instrucciones detalladas de instalación
+- [Guía de Usuario](USER_GUIDE.md) - Tutorial de uso paso a paso
+- [Referencia de API](API.md) - Documentación completa de API
+- [Guía de Métricas](METRICS.md) - Explicación de métricas calculadas
 
-## Requirements
+## Requisitos
 
 - Python 3.8+
 - NumPy >= 1.20
 - Pandas >= 1.3
 - SciPy >= 1.7
 - Matplotlib >= 3.4
-- DeepLabCut >= 2.2 (optional, for pose estimation)
+- DeepLabCut >= 2.2 (opcional, para estimación de pose)
 
 ## Testing
 
 ```bash
-# Run all tests
+# Ejecutar todos los tests
 pytest tests/
 
-# Run with coverage
+# Ejecutar con cobertura
 pytest tests/ --cov=. --cov-report=html
 
-# Run specific test module
+# Ejecutar módulo de test específico
 pytest tests/test_velocity.py -v
 
-# Run only fast tests (skip slow performance tests)
+# Ejecutar solo tests rápidos (saltar tests de rendimiento lentos)
 pytest tests/ -m "not slow"
 ```
 
-## Coverage Targets
+## Objetivos de Cobertura
 
-| Module | Target | Critical Paths |
-|--------|--------|----------------|
-| Domain/Business Logic | 90%+ | 100% |
-| Analysis Modules | 90%+ | 100% |
-| Integration | 70%+ | 80% |
+| Módulo | Objetivo | Rutas Críticas |
+|--------|----------|----------------|
+| Dominio/Lógica de Negocio | 90%+ | 100% |
+| Módulos de Análisis | 90%+ | 100% |
+| Integración | 70%+ | 80% |
 
-## Contributing
+## Contribuir
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Haz fork del repositorio
+2. Crea una rama de funcionalidad (`git checkout -b feature/funcionalidad-increible`)
+3. Haz commit de tus cambios (`git commit -m 'Agregar funcionalidad increíble'`)
+4. Push a la rama (`git push origin feature/funcionalidad-increible`)
+5. Abre un Pull Request
 
-## License
+## Licencia
 
-MIT License - see [LICENSE](../LICENSE) for details.
+Licencia MIT - ver [LICENSE](../LICENSE) para detalles.
 
-## Citation
+## Citación
 
-If you use this software in your research, please cite:
+Si usas este software en tu investigación, por favor cita:
 
 ```bibtex
 @software{mouse_locomotor_tracker,
@@ -325,16 +325,16 @@ If you use this software in your research, please cite:
 }
 ```
 
-## Acknowledgments
+## Agradecimientos
 
-This project builds upon methodologies from:
+Este proyecto se basa en metodologías de:
 
-- Allodi et al. (2021) - Locomotor analysis methods
-- DeepLabCut - Pose estimation framework
-- Circular statistics implementations
+- Allodi et al. (2021) - Métodos de análisis de locomoción
+- DeepLabCut - Framework de estimación de pose
+- Implementaciones de estadística circular
 
-## Contact
+## Contacto
 
-- **Author**: Stride Labs
+- **Autor**: Stride Labs
 - **Email**: contact@stridelabs.cl
-- **Website**: https://stridelabs.cl
+- **Sitio Web**: https://stridelabs.cl
