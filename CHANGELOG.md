@@ -7,8 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [1.1.0] - 2025-01-14
+
 ### Added
-- Interactive Streamlit dashboard for real-time analysis
+- **Video Auto-Extraction**: Dashboard ahora extrae frames automáticamente al iniciar
+- **assets/video.mp4**: Video de demostración incluido en el proyecto (3.2 MB)
+- Función `extract_video_frames()` con cache de Streamlit para evitar re-extracción
+- Mensajes de estado si falta OpenCV o el video
+
+### Changed
+- Dashboard usa rutas dinámicas (`VIDEO_PATH`, `VIDEO_FRAMES_DIR`) en lugar de hardcoded
+- Mejor manejo de errores cuando el video no está disponible
+
+### Fixed
+- Video no se mostraba porque los frames no existían
 
 ---
 
