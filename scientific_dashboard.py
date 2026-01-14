@@ -1970,25 +1970,24 @@ def main():
                 key="mouse_animation"
             )
 
-        # Summary metrics - horizontal row
-        avg_speed = df['velocity'].mean()
-        max_accel = df['acceleration'].abs().max()
-        total_time = df['time'].max()
+        # Dynamic metrics - update with current frame
+        current_speed = df.iloc[frame]['velocity']
+        current_accel = df.iloc[frame]['acceleration']
         cadence = df.attrs.get('cadence_hz', 0)
 
         st.markdown(f'''
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin: 0.5rem 0;">
             <div class="metric-card" style="padding: 8px;">
-                <div class="metric-label" style="font-size: 0.6rem;">AVG SPEED</div>
-                <div class="metric-value" style="font-size: 1rem;">{avg_speed:.1f} cm/s</div>
+                <div class="metric-label" style="font-size: 0.6rem;">SPEED</div>
+                <div class="metric-value" style="font-size: 1rem; color: #60a5fa;">{current_speed:.1f} cm/s</div>
             </div>
             <div class="metric-card" style="padding: 8px;">
-                <div class="metric-label" style="font-size: 0.6rem;">MAX ACCEL</div>
-                <div class="metric-value" style="font-size: 1rem;">{max_accel:.2f} cm/s²</div>
+                <div class="metric-label" style="font-size: 0.6rem;">ACCEL</div>
+                <div class="metric-value" style="font-size: 1rem; color: {'#22c55e' if current_accel >= 0 else '#f97316'};">{current_accel:+.2f} cm/s²</div>
             </div>
             <div class="metric-card" style="padding: 8px;">
-                <div class="metric-label" style="font-size: 0.6rem;">DURATION</div>
-                <div class="metric-value" style="font-size: 1rem;">{total_time:.2f} s</div>
+                <div class="metric-label" style="font-size: 0.6rem;">TIME</div>
+                <div class="metric-value" style="font-size: 1rem; color: #a78bfa;">{current_time:.2f} s</div>
             </div>
             <div class="metric-card" style="padding: 8px;">
                 <div class="metric-label" style="font-size: 0.6rem;">CADENCE</div>
